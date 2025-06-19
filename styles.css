@@ -1,0 +1,70 @@
+body{
+    background-color: rgb(255, 251, 222);
+}
+#app{
+    display: block;
+    margin-top: 5%;
+    margin-left: 25%;
+    margin-right: 25%;
+    background-color: rgb(144, 209, 202);
+    border-radius: 35px;
+}
+#title{
+    display: block;
+    text-align: center;
+    font-family: "Rockwell";
+    letter-spacing: 1px;
+    font-size: 28px;
+    padding: 15px;
+    margin: -5px;
+}
+#searchContainer{
+    display: block;
+}
+#searchBar{
+    display: inline-block;
+    position: absolute;
+    margin-left: 12%;
+    font-size: 20px;
+    border-radius: 20px;
+    width: 26%;
+    height: 2em;
+    background-color: rgb(18, 153, 144);
+    border-style:groove;
+    border-color: rgba(18, 153, 144, 0.66);
+}
+#searchBtn{
+    display: inline-block;
+    position:fixed;
+    margin-left: 33%;
+    margin-top: 6px;
+    width: 5.5em;
+    height: 2.5em;
+    border-radius: 25px;
+    background-color: rgb(9, 107, 104);
+    border-style: none;
+}
+
+#infoContainer{
+    display: block;
+    background-color: rgb(9, 107, 104);
+    margin: 3em;
+    text-align: center;
+}
+#graficTemp{
+    background-color: aqua;
+    margin-left: 15%;
+    width: 70%;
+    border-radius: 20px;
+    text-align: center;
+}
+#WeatherImg{
+    display: inline-block;
+    font-size: 50px;
+}
+#temp{
+    display: inline-block;
+    font-size: 40px;
+    margin-top: -10%;
+    margin-bottom:1%;
+}

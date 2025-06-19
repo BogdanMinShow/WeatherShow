@@ -4,10 +4,27 @@
     <!-- Meta tags aici -->
     <title>Weather App</title>
     <link style="border-radius: 100%;" type="image/png" sizes="64x64" rel="icon" href="iconApp.png">
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="app.js"></script>
     <!-- Link-uri către CSS și JS -->
   </head>
   <body>
     <div id="app">
+      <h2 id="title">WeatherApp</h2>
+      <div id="searchContainer">
+        <input id="searchBar" type="text">
+        <button id="searchBtn">SEARCH</button>
+      </div>
+      <div id="infoContainer">
+        <h1 id="location">INFO AICI</h1>
+        <div id="metaInfo">
+        <div id="graficTemp">
+          <div id="WeatherImg">🌞</div>
+          <h2 id="temp">23C°</h2>
+        </div>
+          <p id="tempCaracter">Cer-Senin</p>
+        </div>
+      </div>
       <!-- Structura ta aici -->
     </div>
   </body>
