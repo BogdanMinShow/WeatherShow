@@ -23,4 +23,4 @@
 
 ## 👨‍💻 Autor
 
-[Info despre tine]
+BogdanMinShow/PascaNogdan
