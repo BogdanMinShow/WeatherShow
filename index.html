@@ -5,8 +5,7 @@
     <title>Weather App</title>
     <link style="border-radius: 100%;" type="image/png" sizes="64x64" rel="icon" href="iconApp.png">
     <link rel="stylesheet" href="styles.css">
-    <script type="module" src="app.js"></script>
-    <!-- Link-uri către CSS și JS -->
+    <script type="module" src="app.js" defer></script>
   </head>
   <body>
     <div id="app">
@@ -16,13 +15,33 @@
         <button id="searchBtn">SEARCH</button>
       </div>
       <div id="infoContainer">
-        <h1 id="location">INFO AICI</h1>
-        <div id="metaInfo">
+          <h1 id="location"></h1>
         <div id="graficTemp">
-          <div id="WeatherImg">🌞</div>
-          <h2 id="temp">23C°</h2>
+          <div id="WeatherImg"></div>
+          <h2 id="temp" data-unit=""></h2>
         </div>
-          <p id="tempCaracter">Cer-Senin</p>
+        <div id="metaInfo">
+          <table id="tableInfo">
+          <tr>
+          <th>STAREA-VREMII:<th id="tempCaracter">--</th></th>
+          </tr>
+          <tr>
+          <th>UMIDITATEA-DIN-ATMOSFERA:<th id="Umidity">--%</th></th>
+          </tr>
+          <tr>
+          <th>PRESIUNEA-ATMOSFERICA:<th id="pressureAtm">--hPa</th></th>
+          </tr>
+          <tr>
+          <th>VANT:<th id="wind">--Km/H</th></th>
+          </tr>
+          <tr>
+          <th>VIZIBILITATE:<th id="vizibility">--Km</th></th>
+          </tr>
+          <tr>
+          <th>RASARIT:<th id="sunrise">--:--</th></th>
+          </tr>
+          <th>APUS:<th id="sunset">--:--</th></th>
+          </table>
         </div>
       </div>
       <!-- Structura ta aici -->

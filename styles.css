@@ -7,6 +7,7 @@ body{
     margin-left: 25%;
     margin-right: 25%;
     background-color: rgb(144, 209, 202);
+    padding: 1px;
     border-radius: 35px;
 }
 #title{
@@ -19,7 +20,7 @@ body{
     margin: -5px;
 }
 #searchContainer{
-    display: block;
+    display: block;;
 }
 #searchBar{
     display: inline-block;
@@ -31,13 +32,13 @@ body{
     height: 2em;
     background-color: rgb(18, 153, 144);
     border-style:groove;
-    border-color: rgba(18, 153, 144, 0.66);
+    border-color: rgba(18, 153, 144, 0.66);;
 }
 #searchBtn{
     display: inline-block;
-    position:fixed;
-    margin-left: 33%;
-    margin-top: 6px;
+    position: relative;
+    margin-left: 69%;
+    margin-top: 5px;
     width: 5.5em;
     height: 2.5em;
     border-radius: 25px;
@@ -48,8 +49,11 @@ body{
 #infoContainer{
     display: block;
     background-color: rgb(9, 107, 104);
-    margin: 3em;
+    margin: 2em;
+    padding: 1px;
     text-align: center;
+    margin-top: 5%;
+    border-radius: 15px;
 }
 #graficTemp{
     background-color: aqua;
@@ -58,13 +62,101 @@ body{
     border-radius: 20px;
     text-align: center;
 }
-#WeatherImg{
+
+#WeatherImg::before {
+    display: none;
+    
+}
+
+#WeatherImg {
     display: inline-block;
     font-size: 50px;
+    position: relative;
+    
+}
+
+#WeatherImg::after {
+    content: "🌞";
+    display: inline-block;
+    font-size: 50px;
+    animation: slice 2s backwards;
+    animation-delay: 1s;
+}
+
+/* Slide keyframes */
+@keyframes slice {
+    0% {
+        transform: translateX(-4.5em);
+        opacity: 0;
+    }
+    50%{
+        transform: translateX(0px);
+        transform: translateY(0px);
+        opacity: 1;
+    }
+    65%{
+        transform: translateY(-10px);
+    }
+    80%{
+        transform: scale(110%);
+        opacity: 1;
+    }
+    100%{
+        transform: translateX(0px);
+        transform: scale(100%);
+        transform: translateY(0px);
+        opacity: 1;
+    }
+
+}
+#temp::before{
+    display: none;
 }
 #temp{
     display: inline-block;
-    font-size: 40px;
+    font-size: 50px;
     margin-top: -10%;
     margin-bottom:1%;
+    transition-duration: 1s;
+    margin-left: 0.5em;
+}
+#temp::after{
+    content: attr(data-unit);
+    display: inline-block;
+    font-size: 50px;
+    margin-top: -10%;
+    margin-bottom:1%;
+    transition-duration: 1s;
+    animation: info 2s forwards;
+}
+@keyframes info{
+    0%{
+        transform: translateX(+4.5em);
+        opacity: 1;
+    }
+    100%{
+        transform: translateX(0px);
+        opacity: 1;
+    }
+}
+
+#location{
+    padding: 1px;
+}
+#metaInfo{
+    background-color: aqua;
+    margin: 5%;
+    border-radius: 20px;
+    text-align: left;
+    border-style: solid;
+}
+#tableInfo{
+    background-color: aqua;
+    margin: 5%;
+    border-spacing: 25px;
+    border-radius: 20px;
+    text-align: left;
+    border-style: solid;
+    border-color: blue;
+    width: 90%;
 }
