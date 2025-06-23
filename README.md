@@ -1,6 +1,4 @@
 # Weather App 🌦️
-
-[To-Do-List:]
 ## Final Validation - Checklist
 
 ### ✅ Funcționalitate
