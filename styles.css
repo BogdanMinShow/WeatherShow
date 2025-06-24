@@ -11,7 +11,7 @@ body{
     border-radius: 35px;
 }
 #title{
-    display: block;
+    display: inline-block;
     text-align: center;
     font-family: "Rockwell";
     letter-spacing: 1px;
@@ -151,6 +151,7 @@ body{
     border-style: solid;
 }
 #tableInfo{
+    display: block;
     background-color: aqua;
     margin: 5%;
     border-spacing: 25px;
@@ -159,4 +160,38 @@ body{
     border-style: solid;
     border-color: blue;
     width: 90%;
+}
+#theme{
+                display: inline-block;
+                float: left;
+                width: 96px;
+                height: 40px;
+                background-color: turquoise;
+                border-radius: 35px;
+                margin-left: 1%;
+            }
+            #themeBtn{
+                border-radius: 100%;
+                height: 3em;
+                width: 3em;
+                font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            }
+            #language{
+                display: inline-block;
+                float: right;
+                width: 96px;
+                height: 40px;
+                background-color: turquoise;
+                border-radius: 35px;
+                margin-right: 1%;
+            }
+            #languageBtn{
+                border-radius: 100%;
+                height: 3em;
+                width: 3em;
+                font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            }
+#titleComplexe{
+    text-align: center;
+    padding: 10px;
 }

@@ -10,10 +10,17 @@ export const elements = {
   vizibility: document.querySelector("#vizibility"),
   sunrise: document.querySelector("#sunrise"),
   sunset: document.querySelector("#sunset"),
+  theme: document.querySelector("#theme"),
+  language: document.querySelector("#language"),
+  themeBtn: document.querySelector("#themeBtn"),
+  languageBtn: document.querySelector("#languageBtn")
   // ... restul elementelor
 }
+elements.themeBtn.style.marginLeft = "60px"
+elements.languageBtn.style.marginLeft = "60px"
+
 export function showLoading() {
-    console.log("Se incarca locatia...")
+    console.log("Detectez locația...")
 }
 
 export function hideLoading() {
@@ -22,16 +29,20 @@ export function hideLoading() {
 export function showError(message) {
     console.error(`${message}`)
 }
+
+export function showMessage(){
+    
+}
 //
 
 
 export const displayWeather = (weatherData) => {
     if (weatherData) {
-        const accesKey = weatherData.main
+        const accesKey = weatherData
     elements.locationName.textContent=accesKey.name.toUpperCase()
-        const celsiusTemp = accesKey.main.temp -  273.15
+        const celsiusTemp = accesKey.main.temp
         elements.temp.setAttribute("data-unit",celsiusTemp.toFixed(1) +" °C") 
-    elements.tempCaracter.textContent=accesKey.main.feels_like
+    elements.tempCaracter.textContent=accesKey.weather[0].main
     elements.Umidity.textContent=accesKey.main.humidity + " %"
     elements.pressureAtm.textContent=accesKey.main.pressure + " hPa"
     elements.wind.textContent = accesKey.wind.speed + " Km/H"
@@ -49,7 +60,5 @@ export const displayWeather = (weatherData) => {
      minute: '2-digit'
     });
     }
-    
-    console.log()
 }
 //
