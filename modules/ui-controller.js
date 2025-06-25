@@ -29,31 +29,32 @@ export const elements = {
 elements.themeBtn.style.marginLeft = "60px"
 elements.unitsBtn.style.marginLeft = "60px"
 elements.languageBtn.style.marginLeft = "60px"
-
+// //
 export function showLoading() {
     elements.loader.style.display = "none"
     console.log("Detectez locația...")
 }
-
+//
 export function hideLoading() {
     elements.loader.style.display = ""
 }
-
+//
 export function showError(message) {
     console.error(`${message}`)
 }
-
+//
 export function showMessage(text){
     return text
 }
-//
+// //
 
-
+//Ilustrare grafica:
 export const displayWeather = (weatherData) => {
     if (weatherData) {
         const accesKey = weatherData
     elements.locationName.textContent=accesKey.name.toUpperCase()
         const celsiusTemp = accesKey.main.temp
+
         if (elements.unitsBtn.textContent === "°C") {
             if (celsiusTemp>35) {
                 elements.WeatherImg.setAttribute("container","🌞")
@@ -87,6 +88,7 @@ export const displayWeather = (weatherData) => {
                 elements.WeatherImg.setAttribute("container","☁️")
             }
         }
+        
         elements.temp.setAttribute("data-unit",celsiusTemp.toFixed(1) + elements.unitsBtn.textContent) 
     elements.tempCaracter.textContent=accesKey.weather[0].description.toUpperCase()
     elements.Umidity.textContent=accesKey.main.humidity + " %"
@@ -99,16 +101,15 @@ export const displayWeather = (weatherData) => {
     elements.vizibility.textContent=accesKey.visibility/1000 +"Km"
     const sunriseTime = new Date(accesKey.sys.sunrise * 1000);
     const sunsetTime = new Date(accesKey.sys.sunset * 1000);
-
+//
     elements.sunrise.textContent = sunriseTime.toLocaleTimeString([], {
      hour: '2-digit',
      minute: '2-digit'
     });
-
+//
     elements.sunset.textContent = sunsetTime.toLocaleTimeString([], {
      hour: '2-digit',
      minute: '2-digit'
     });
     }
 }
-//

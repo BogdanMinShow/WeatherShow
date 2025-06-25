@@ -1,4 +1,3 @@
-// Ce informații sunt comune pentru toate request-urile API?
 export const CONFIG = {
   API_KEY: 'f0bccf546e223e16796a07371e4f9407', // Unde obții asta?
   API_BASE_URL: 'https://api.openweathermap.org/data/2.5' /* care este URL-ul de bază? */,
@@ -6,16 +5,13 @@ export const CONFIG = {
   DEFAULT_LANG: `ro` /* ro, en, sau altceva? */
 }
 
-// Cum organizezi endpoint-urile pentru a fi ușor de găsit?
 export const API_ENDPOINTS = {
   CURRENT_WEATHER: `/weather` /* ce endpoint pentru vremea curentă? */,
   FORECAST: `/forecast` /* ce endpoint pentru prognoză? */,
-  // Ce alte endpoint-uri ai putea avea nevoie?
 }
 
-// Ce mesaje sunt utile când ceva merge prost?
 export const ERROR_MESSAGES = {
   CITY_NOT_FOUND: "Orasul nu a fost gasit!" /* ce mesaj prietenos? */,
   NETWORK_ERROR: "Conexiune la internet, lipsa!" /* ce mesaj când nu ai internet? */,
-  // Ce alte erori pot apărea?
+  // Ce alte erori pot apărea? (UNKONOM_ERROR)
 }

@@ -1,19 +1,18 @@
 import { ByDefault } from '../app.js'
 import { CONFIG, API_ENDPOINTS, ERROR_MESSAGES} from './config.js'
-import { elements } from './ui-controller.js'
+//Functia ge gasire a vremii:
 export const getCurrentWeather = async (city) => {
         const resolved = await makeRequest(buildUrl(`${API_ENDPOINTS.CURRENT_WEATHER}`,{q:`${city}`})).then((data)=>{
             return data
         })
         return  resolved
     }
-// console.log(getCurrentWeather())
-
+//In cazul unei errori de gasire a locatiei:
 export const getCurrentWeatherWithFallback = async (city) => {
   try {
     return await getCurrentWeather(city)
   } catch (error) {
-    console.warn('Using fallback data due to:', error.message)
+    console.warn('Locatia ramane, ultima locatie:\n ↪ERROR:', error.message)
     return {
       ...ByDefault,
       isFallback: true,
@@ -21,25 +20,20 @@ export const getCurrentWeatherWithFallback = async (city) => {
     }
   }
 }
-
+//Gasirea vremii dupa coordonate:
 export const getWeatherByCoords = async (lat, lon) => {
     const url = buildUrl(API_ENDPOINTS.CURRENT_WEATHER, { lat, lon });
     return await makeRequest(url);
 }
-
-  // Similar, dar pentru coordonate
-
-// În modules/weather-service.js
+//Construirea URL-ului:
 export const buildUrl = (endpoint, params = {}) => {
-  // Cum combini base URL cu endpoint?
+
   const url = new URL(CONFIG.API_BASE_URL + endpoint)
 
-  // Ce parametri sunt întotdeauna necesari?
   url.searchParams.set('appid', CONFIG.API_KEY)
   url.searchParams.set('units', CONFIG.DEFAULT_UNITS)
   url.searchParams.set('lang', CONFIG.DEFAULT_LANG)
 
-  // Cum adaugi parametrii specifici (city, lat, lon)?
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
       url.searchParams.set(key, value)
@@ -48,11 +42,14 @@ export const buildUrl = (endpoint, params = {}) => {
 
   return url.toString()
 }
+//Construirea API-ului:
 export const makeRequest = async (url) => {
   try {
     const response = await fetch(url)
-
-    // Cum verifici că request-ul a fost successful?
+    
+    if (response.ok) {
+      return await response.json()
+    }
     if (!response.ok) {
       let message;
       switch (response.status) {

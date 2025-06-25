@@ -3,25 +3,28 @@ import * as ui from './modules/ui-controller.js';
 import {getCoords} from './modules/location-service.js';
 import { elements } from './modules/ui-controller.js';
 import { CONFIG } from './modules/config.js';
-
+//Functie de initializare a datelor din LocalStorage:
 initializeSettings()
+//Incarcarea datelor ByDefault:
 async function defaults() {
   ui.showLoading()
   const coords = await getCoords()
   if (coords.source === 'ip') {
   console.log('Locație aproximativă bazată pe:\n ●IP')
     service.getWeatherByCoords(coords.latitude, coords.longitude).then((data) => {
-        console.log('Locatie identificata ↧\n', data)
+        console.log('Locatie identificata \n ↪', data)
         console.log('Locatia incarcata este:\n', `>${data.name}`)
     ui.displayWeather(data)
     })}else{
   console.log('Locație aproximativă bazată pe:\n ●GPS')
     service.getCurrentWeather("Anina").then((data) => {
-        console.log('Locatie identificata:\n', data)
+        console.log('Locatie identificata \n ↪', data)
         console.log('Locatia incarcata este:\n', `>${data.name}`)
     ui.displayWeather(data)
     })}
+    return
 }
+//Functia pentru evenimente:
 const setupEventListeners = () => {
   ui.elements.searchBtn.addEventListener("click",handleSearch)
   ui.elements.searchBar.addEventListener("keydown", (x)=>{
@@ -29,6 +32,7 @@ const setupEventListeners = () => {
         handleSearch();
     }
   })
+  //language
   elements.languageBtn.addEventListener("click", function(){
     if (elements.languageBtn.style.marginLeft==="60px") {
         elements.languageBtn.style.marginLeft= "-60px"
@@ -74,7 +78,7 @@ const setupEventListeners = () => {
         return
     }
 })
-//Limba (ro/en)
+//theme
 elements.themeBtn.addEventListener("click", function(){
     if (elements.themeBtn.style.marginLeft==="60px") {
         elements.themeBtn.style.marginLeft="-60px"
@@ -94,6 +98,7 @@ elements.themeBtn.addEventListener("click", function(){
         document.querySelector("body").style.backgroundColor= localStorage.getItem("theme")
     }
 })
+//units
 elements.unitsBtn.addEventListener("click", function(){
     if (elements.unitsBtn.style.marginLeft==="60px") {
         elements.unitsBtn.style.marginLeft= ""
@@ -119,9 +124,10 @@ elements.unitsBtn.addEventListener("click", function(){
             ui.displayWeather(data)
         })
     }
-    
+    return
 })
 }
+//Functie de initializare a datelor din LocalStorage:
 function initializeSettings() {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "rgb(34, 40, 49)") {
@@ -171,35 +177,45 @@ function initializeSettings() {
         elements.unitsBtn.style.transitionDuration= "0.65s"
         elements.unitsBtn.textContent="°F"
     }
+    return
 }
 const handleSearch = async () => {
+    console.log("=========================================")
     ui.showLoading()
     if (!isValidCity(ui.elements.searchBar.value)) {
         ui.showError("Nu s-au gasit date pentru acest oras")
         return
     }
-    
     try{
-    const weatherService = await service.getCurrentWeatherWithFallback(ui.elements.searchBar.value)
+    if (ui.elements.searchBar.value === "bucuresti" || ui.elements.searchBar.value === "Bucuresti") {
+        const weatherService = await service.getCurrentWeatherWithFallback("București")
     console.log("Locatia incarcata este:\n >",weatherService.name)
     ui.hideLoading()
-    console.log("Locatie identificata ↧\n",weatherService)
+    console.log("Locatie identificata \n ↪",weatherService)
     ui.displayWeather(weatherService)
+    console.log("=========================================")
+    return
+    }else{
+    const weatherService = await service.getCurrentWeatherWithFallback(ui.elements.searchBar.value)
+    if (weatherService.name === undefined) {
+        throw new Error(`Nu s-au gasit date pentru: "${ui.elements.searchBar.value}"`)
     }
-    catch (err){
-        console.error(err)
-        ui.showError('Nu s-au gasit date pentru acest oras')
+    console.log("Locatia incarcata este:\n >",weatherService.name)
+    ui.hideLoading()
+    console.log("Locatie identificata \n ↪",weatherService)
+    ui.displayWeather(weatherService)
+    console.log("=========================================")
+    return
+    }}catch (err){
+            ui.showError(err.message)
     }
 }
-
+//
 export const isValidCity = (city) => {
   return city.length >= 2 && /^[a-zA-ZăâîșțĂÂÎȘȚ\s-]+$/.test(city.trim());
 }
+//
 export const ByDefault = defaults()
+//
 setupEventListeners()
-// Acceptă permisiunea când browser-ul întreabă
-// getCoords().then((coords) => {
-//   console.log('Coords received:', coords)
-//   console.log('Has lat/lon?', coords.latitude && coords.longitude)
-//   console.log('Source:', coords.source)
-// })
+//
