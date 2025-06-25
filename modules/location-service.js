@@ -7,7 +7,20 @@ export const getCoords = () => new Promise(async (resolve, reject) => {
       // API public care oferă locația bazată pe IP (gratuit, fără API key)
       const response = await fetch('https://ipapi.co/json/');
       const data = await response.json();
-      console.log(data); // Verifică structura în consola browserului
+      function animation(){
+        setTimeout(() => {
+          console.log("Informatii IP se incarca...")
+        }, 250);
+        setTimeout(() => {
+          console.log("Se iau informatii din ORAS...")
+        }, 500);
+        setTimeout(() => {
+          console.log("●IP-ul este:\n", ` ►${data.ip}`)
+          console.log("●Orasul este:\n", ` ►${data.city}`)
+          console.log("●Judetul este:\n", ` ►${data.region}`)
+        }, 1000);
+      }
+      animation() // Verifică structura în consola browserului
 
       resolve({
         latitude: data.latitude,

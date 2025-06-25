@@ -44,7 +44,7 @@
 ## 🗺️ Roadmap
 
 - [x] Part 1: Fundamente
-- [ ] Part 2: API real
+- [x] Part 2: API real
 - [ ] Part 3
 - [ ] Part 4
 

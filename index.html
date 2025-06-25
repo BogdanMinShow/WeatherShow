@@ -18,41 +18,44 @@
             <button id="languageBtn">RO</button>
         </div>
         </div>
+        <div id="units">
+            <button id="unitsBtn">°C</button>
+        </div>
       <div id="searchContainer">
         <input id="searchBar" type="text">
         <button id="searchBtn">SEARCH</button>
       </div>
+      
       <div id="infoContainer">
-          <h1 id="location"></h1>
+          <h1 id="location"><div id="loader"></div></h1>
         <div id="graficTemp">
-          <div id="WeatherImg"></div>
+          <div id="WeatherImg" container=""></div>
           <h2 id="temp" data-unit="--°C"></h2>
         </div>
         <div id="metaInfo">
           <table id="tableInfo">
           <tr>
-          <th>STAREA-VREMII:<th id="tempCaracter">--</th></th>
+          <th id="one">STAREA-VREMII:<th id="tempCaracter">--</th></th>
           </tr>
           <tr>
-          <th>UMIDITATEA-DIN-ATMOSFERA:<th id="Umidity">--%</th></th>
+          <th id="two">UMIDITATEA-DIN-ATMOSFERA:<th id="Umidity">--%</th></th>
           </tr>
           <tr>
-          <th>PRESIUNEA-ATMOSFERICA:<th id="pressureAtm">--hPa</th></th>
+          <th id="three">PRESIUNEA-ATMOSFERICA:<th id="pressureAtm">--hPa</th></th>
           </tr>
           <tr>
-          <th>VANT:<th id="wind">--Km/H</th></th>
+          <th id="for">VANT:<th id="wind">--Km/H</th></th>
           </tr>
           <tr>
-          <th>VIZIBILITATE:<th id="vizibility">--Km</th></th>
+          <th id="five">VIZIBILITATE:<th id="vizibility">--Km</th></th>
           </tr>
           <tr>
-          <th>RASARIT:<th id="sunrise">--:--</th></th>
+          <th id="six">RASARIT:<th id="sunrise">--:--</th></th>
           </tr>
-          <th>APUS:<th id="sunset">--:--</th></th>
+          <th id="seven">APUS:<th id="sunset">--:--</th></th>
           </table>
         </div>
       </div>
-      <!-- Structura ta aici -->
     </div>
   </body>
 </html>
