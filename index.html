@@ -1,31 +1,53 @@
 <!DOCTYPE html>
 <html lang="ro">
   <head>
-    <!-- Meta tags aici -->    
+    <!-- META-TAGS -->   
+     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Weather App</title>
+<!-- AESTETICH -->
     <link style="border-radius: 100%;" type="image/png" sizes="64x64" rel="icon" href="iconApp.png">
     <link rel="stylesheet" href="styles.css">
+<!-- SCRIPT -->
     <script type="module" src="app.js" defer></script>
   </head>
   <body>
+    <!-- APP -->
     <div id="app">
-      <div id="titleComplexe">
+<!-- ERROR MESAGES -->
+      <div>
+      <div id="notFoundLocation">
+        <h3>Locatia nu a fost gasita!</h3>
+      </div>
+      <div id="toShort">
+        <h3>Locatia nu poate avea mai putin de 3 litere!</h3>
+      </div>
+      </div>
+<!-- BTNContainer -->
+      <div id="BtnContainer" >
+        <!-- THEME -->
       <div id="theme">
             <button id="themeBtn">𖤓</button>
         </div>
-      <h2 id="title">WeatherApp</h2>
+        <!-- LANGUAGE -->
       <div id="language">
             <button id="languageBtn">RO</button>
         </div>
-        </div>
+        <!-- UNITS -->
         <div id="units">
             <button id="unitsBtn">°C</button>
         </div>
+        </div>
+<!-- SETTINGS & NAME of APP -->
+      <div id="titleContainer">
+        <button id="setting"><img src="settings-btn(wich).png"></button>
+        <h2 id="title">WeatherApp</h2>
+        </div>
+<!-- SEARCHContainer -->
       <div id="searchContainer">
         <input id="searchBar" type="text">
-        <button id="searchBtn">SEARCH</button>
+        <input id="searchBtn" type="button" value="SEARCH">
       </div>
-      
+<!-- INFOContainer -->
       <div id="infoContainer">
           <h1 id="location"><div id="loader"></div></h1>
         <div id="graficTemp">
@@ -56,6 +78,16 @@
           </table>
         </div>
       </div>
+
+      <div id="recentSearch">
+        <!-- MESAGE -->
+         <h3 id="mesage">Cautarile-Recente:</h3>
+         <!-- TEST \/ -->
+        <!-- <button style="display: inline-block; background-color: rgb(70, 70, 70); margin: 1%; border-radius: 10px; padding: 10px; font-size: 20px; margin-top: 2%;">Brasov</button>
+        <button style="display: inline-block; background-color: rgb(70, 70, 70); margin: 1%; border-radius: 10px; padding: 10px; font-size: 20px; margin-top: 2%;">Brasov</button>
+        <button style="display: inline-block; background-color: rgb(70, 70, 70); margin: 1%; border-radius: 10px; padding: 10px; font-size: 20px; margin-top: 2%;">Brasov</button> -->
+      </div>
     </div>
+
   </body>
 </html>
