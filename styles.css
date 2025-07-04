@@ -207,6 +207,7 @@ body{
     margin-bottom: -0.2em;
     font-size: 24px;
 }
+/*  */
 #deleteBtn{
     display: inline-block;
     background-color: rgb(70, 70, 70);
@@ -215,6 +216,18 @@ body{
     padding: 10px;
     font-size: 20px;
 }
+#locationBtn{
+    display: inline-block; 
+    background-color: rgba(70, 70, 70, 0.5);
+    margin: 1%; 
+    border-radius: 10px; 
+    padding: 10px; 
+    font-size: 20px; 
+    margin-top: 2%;
+    color: black;
+    cursor: pointer;
+}
+/*  */
 /* ERROR CONTAINER */
 #notFoundLocation{
     display: none;

@@ -9,7 +9,7 @@ import { CONFIG } from './modules/config.js';
 async function defaults() {
   const coords = await getCoords();
   const ByCoords = await service.getWeatherByCoords(coords.latitude, coords.longitude);
-
+  console.log("==============")
   const locationSource = coords.source === 'ip' ? '🛜Locație aproximativă bazată pe:\n ●IP' : '🌐Locație aproximativă bazată pe:\n ●GPS';
   logger.info(locationSource, '');
 
@@ -22,6 +22,7 @@ async function defaults() {
     ui.renderHistory(historyService.getHistory());
     ui.displayWeather(data);
     console.log("[HISTORY-LOGS]:\n", logger.getLogs());
+    console.log("==============")
   });
 }
 

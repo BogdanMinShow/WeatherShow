@@ -44,7 +44,7 @@ addLocation(weatherData) {
       (item) => item.city.toLowerCase() !== city.toLowerCase()
     );
     this._saveToStorage(history);
-    console.log(`♨️Locația ștearsă: ${city}`);
+    logger.warn(`♨️Locația ștearsă: ${city}`,"");
   }
 
   clearHistory() {
