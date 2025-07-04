@@ -7,18 +7,17 @@ export const getCoords = () => new Promise(async (resolve, reject) => {
       const data = await response.json();
       function animation(){
         setTimeout(() => {
-          logger.warn("Informatii IP se incarca...")
+          logger.warn("Informatii IP se incarca...", "")
         }, 250);
         setTimeout(() => {
-          logger.warn("Se iau informatii din ORAS...")
+          logger.warn("Se iau informatii din ORAS...", "")
         }, 500);
         setTimeout(() => {
-          logger.info("●IP-ul este:\n", ` ►${data.ip}`)
-          logger.info("●Orasul este:\n", ` ►${data.city}`)
-          logger.info("●Judetul este:\n", ` ►${data.region}`)
+          logger.info("●IP-ul este:\n", ` ►${data.ip}`,"")
+          logger.info("●Orasul este:\n", ` ►${data.city}`,"")
+          logger.info("●Judetul este:\n", ` ►${data.region}`,"")
         }, 1000);
       }
-      animation()
 
       resolve({
         latitude: data.latitude,
@@ -26,6 +25,7 @@ export const getCoords = () => new Promise(async (resolve, reject) => {
         source: 'ip',
         accuracy: data.city
       });
+      animation()
     } catch (error) {
       reject(new Error('Nu am putut determina locația prin IP.'));
     }
@@ -47,7 +47,7 @@ export const getCoords = () => new Promise(async (resolve, reject) => {
       });
     },
     (error) => {
-      console.warn(error.message);
+      logger.warn("Utilizatorul a refuzat geolocalizarea!", "");
       fallbackToIp();
     },
     {

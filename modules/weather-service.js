@@ -12,7 +12,7 @@ export const getCurrentWeatherWithFallback = async (city) => {
   try {
     return await getCurrentWeather(city)
   } catch (error) {
-    console.warn('Locatia ramane, ultima locatie:\n ↪ERROR:', error.message)
+    console.warn('Locatia ramane ultima: \n ↪ERROR:', error.message)
     return {
       ...ByDefault,
       isFallback: true,

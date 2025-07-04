@@ -37,75 +37,144 @@ export const elements = {
   // ... restul elementelor
 }
 // RECENT-OBJEXT.STYLES: //
+elements.recentObject.setAttribute("id", "recentLocation")
 elements.recentObject.style.cssText=`
 display: inline-block;
-background-color: rgb(70, 70, 70);
-margin: 1%;
+background-color: rgba(70, 70, 70, 0.5);
+margin: 0.6em;
 border-radius: 10px;
-padding: 10px;
+padding: 5px;
 font-size: 20px;
-margin-top: 2%;
 `
 
 // //
 
 export const renderHistory = (historyItems) => {
-     if (historyItems.length === 0) {
-     console.log("Nu ai cautari recente!")
-    return
+  if (historyItems.length === 0) {
+    logger.info("Nu ai căutări recente!");
+    return;
   }
-    // Construiește HTML pentru fiecare item din istoric
-    const tableData = [];
+  Array.from(elements.AfterMesage.children).forEach(child => {
+    if (child.id !== "mesage") {
+      elements.AfterMesage.removeChild(child);
+    }
+  });
+
+  const tableData = [];
+
   historyItems.forEach(x => {
     const getTimeAgo = (timestamp) => {
-  const now = Date.now()
-  const diff = now - timestamp
-  const sec = (diff / 10000).toFixed(2)
-  const min = (sec / 60).toFixed(2)
-  const hour = (min / 60).toFixed(2)
-  const days = (hour / 24).toFixed(2)
+      const now = Date.now();
+      const diff = now - timestamp;
+      const sec = (diff / 1000).toFixed(0);
+      const min = (sec / 60).toFixed(0);
+      const hour = (min / 60).toFixed(0);
+      const days = (hour / 24).toFixed(0);
 
-  if (sec < 60) return `${sec} secunde in urmă`
-  if (min < 60) return `${min} minute în urmă`
-  if (hour < 24) return `${hour} minute în urmă`
-  if (hour > 24) return `${days} minute în urmă`
-
-  // Afișează orașul, țara și timpul relativ (ex: "2 ore în urmă")
-}
+      if (sec < 60) return `${sec} secunde în urmă`;
+      if (min < 60) return `${min} minute în urmă`;
+      if (hour < 24) return `${hour} ore în urmă`;
+      return `${days} zile în urmă`;
+    };
 
     const time = getTimeAgo(x.timestamp);
-    tableData.push({
-      "Orașe": x.city,
-      "Țari": x.country,
-      "Timp": time
-    });
+    const ordinary = {
+      "🏢Orașe": x.city,
+      "🚩Țări": x.country,
+      "⏰Timp": time
+    };
+    tableData.push(ordinary);
 
-    elements.recentObject.textContent = x.city
-    const clone = elements.recentObject.cloneNode(true)
-    elements.AfterMesage.appendChild(clone)
-    // Fiecare item ar trebui să fie clickabil
-    clone.addEventListener("click", async function(){
-        console.log("==============")
-        // showLoading()
-        logger.info("Detectez locația...", "")
-        await getCurrentWeatherWithFallback(clone.textContent).then((data)=>{
-            historyService.addLocation(data)
-            logger.info("Locatia incarcata este:\n >",data.name)
-            hideLoading()
-            logger.warn("Locatie identificata \n ↪", data)
-            displayWeather(data)
-            elements.searchBar.value = data.name
-            console.table(tableData)
+    elements.recentObject.textContent = x.city;
+    const clone = elements.recentObject.cloneNode(true);
+    elements.AfterMesage.appendChild(clone);
+    clone.addEventListener("click", async function () {
+        // let count = 0;
+        clone.addEventListener("dblclick", async function () {
+            if (historyService.getHistory().length===1) {
+                return
+            }
+            console.log("==============");
+      await getCurrentWeatherWithFallback(clone.textContent).then((data) => {
+        const test = tableData.filter((x) => x !== ordinary);
+        test.unshift(ordinary);
+        showLoading();
+        logger.info('📑Locatie identificata: \n ↪', data);
+        hideLoading();
+        logger.info('📄Locatia incarcata este:\n', `>${data.name}`);
+        historyService.addLocation(data);
+        displayWeather(data);
+        elements.searchBar.value = data.name;
+        logger.info("🔎-Locații recente:", "");
+        console.table(test);
+        console.log("[HISTORY-LOGS]:\n", logger.getLogs());
+      });
+      console.log("==============");
         })
-        console.log("==============")
-  })
-  });
+      const newDiv = document.createElement("button")
+      newDiv.textContent = "[ X ]"
+      newDiv.setAttribute("id", "deleteBtn")
+      clone.appendChild(newDiv)
+      if (clone.childNodes.length>2) {
+        clone.lastChild.remove()
+    }else if (historyService.getHistory().length===1) {
+        newDiv.addEventListener("click", function(){
+        logger.warn(`📛Nu poti sa stergi ultima locatie! [${clone.textContent.split("[")[0]}]`,"")
+    })
+        clone.addEventListener("click",function(){
+            try {
+                clone.removeChild(newDiv)
+            } catch (error) {
+                error
+            }
+        }) 
+        return
+    }else if (historyService.getHistory().length===2) {
+        newDiv.addEventListener("click", async function(){
+        historyService.removeLocation(clone.textContent.split("[")[0])
+        renderHistory(historyService.getHistory())
+
+        await getCurrentWeatherWithFallback(historyService.getHistory()[0].city).then((data) => {
+        const test = tableData.filter((x) => x !== ordinary);
+        test.unshift(ordinary);
+        showLoading();
+        logger.info('📑Locatie identificata (AUTO): \n ↪', data);
+        hideLoading();
+        logger.info('📄Locatia incarcata este (AUTO):\n', `>${data.name}`);
+        displayWeather(data);
+        elements.searchBar.value = data.name;
+        logger.info("🔎-Locații recente:", "");
+        console.table(test);
+        console.log("[HISTORY-LOGS]:\n", logger.getLogs());
+      });
+    })
+        clone.addEventListener("click",function(){
+            try {
+                clone.removeChild(newDiv)
+            } catch (error) {
+                error
+            } 
+    })
+    }else{
+      newDiv.addEventListener("click", function(){
+        historyService.removeLocation(clone.textContent.split("[")[0])
+        renderHistory(historyService.getHistory())
+    })
+      clone.addEventListener("click",function(){
+            try {
+                clone.removeChild(newDiv)
+            } catch (error) {
+                error
+            } 
+        }) 
+}})
+logger.info("🔎-Locații recente:", "");
   console.table(tableData);
-  }
+})};
 //
 export function showLoading() {
     elements.loader.style.display = "none"
-    console.log("Detectez locația...")
+    logger.info("🔁Detectez locația...", "")
 }
 //
 export function hideLoading() {

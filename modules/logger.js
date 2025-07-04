@@ -36,7 +36,7 @@ export class Logger {
 
   _log(level, message, data) {
     const timestamp = new Date().toLocaleTimeString()
-    const formated = `[${timestamp}]-[${level}]: ${message}`
+    const formated = `[${timestamp}]-[${level}]: \n -|${message}`
     const entry = { timestamp, level, message, data }
 
     this.logs.push(entry)

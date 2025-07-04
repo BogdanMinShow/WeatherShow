@@ -5,73 +5,26 @@ import { historyService } from './modules/history-service.js';
 import {getCoords} from './modules/location-service.js';
 import { elements } from './modules/ui-controller.js';
 import { CONFIG } from './modules/config.js';
-//Functie de initializare a datelor din LocalStorage:
-//
-
-//
-// import('./modules/config.js').then((config) => {
-//   console.log('Config updated:', config.CONFIG)
-//   console.log('Max history:', config.CONFIG.MAX_HISTORY_ITEMS)
-// })
-//
-// window.logs.show() // Afișează toate log-urile stocate
-// window.logs.clear() // Șterge log-urile din memorie
-// window.logs.get() // Obține array-ul de log-uri pentru procesare
-// //
-// import('./modules/logger.js').then(({ logger }) => {
-//   logger.info('Logger test started')
-//   logger.debug('Debug message', { test: true })
-//   logger.warn('Warning message')
-//   logger.error('Error message', new Error('Test error'))
-
-//   console.log('All logs:', logger.getLogs())
-// })
-//
-
-// import('./modules/history-service.js').then(({ historyService }) => {
-//   // Test salvare
-//   const mockWeatherData = {
-//     name: 'Cluj-Napoca',
-//     sys: { country: 'RO' },
-//     coord: { lat: 46.77, lon: 23.6 },
-//   }
-
-// //   historyService.addLocation(mockWeatherData)
-// //   console.log('History after add:', historyService.getHistory())
-// //   historyService.clearHistory()
-// //   console.log('History after remove:', historyService.getHistory())
-//   // Verifică în localStorage
-//   console.log('In storage:', localStorage.getItem('weather_search_history'))
-// })
-
-
-
 //Incarcarea datelor ByDefault:
 async function defaults() {
-  ui.showLoading()
-  const coords = await getCoords()
-  if (coords.source === 'ip') {
-  logger.warn('Locație aproximativă bazată pe:\n ●IP','')
-    service.getWeatherByCoords(coords.latitude, coords.longitude).then((data) => {
-        logger.warn('Locatie identificata \n ↪', data)
-        logger.info('Locatia incarcata este:\n', `>${data.name}`)
-        historyService.addLocation(data)
+  const coords = await getCoords();
+  const ByCoords = await service.getWeatherByCoords(coords.latitude, coords.longitude);
 
-        // console.log('In storage:', localStorage.getItem(CONFIG.STORAGE_KEYS.SEARCH_HISTORY))
-    ui.displayWeather(data)
-    return
-    })}else{
-  logger.warn('Locație aproximativă bazată pe:\n ●GPS','')
-    service.getCurrentWeatherWithFallback("Anina").then((data) => {
-        logger.warn('Locatie identificata \n ↪', data)
-        logger.info('Locatia incarcata este:\n', `>${data.name}`)
-        historyService.addLocation(data)
+  const locationSource = coords.source === 'ip' ? '🛜Locație aproximativă bazată pe:\n ●IP' : '🌐Locație aproximativă bazată pe:\n ●GPS';
+  logger.info(locationSource, '');
 
-        // console.log('In storage:', localStorage.getItem(CONFIG.STORAGE_KEYS.SEARCH_HISTORY))
-    ui.displayWeather(data)
-    return
-    })} 
+  await service.getCurrentWeatherWithFallback(ByCoords.name).then(async function (data) {
+    ui.showLoading();
+
+    logger.info('📑Locatie identificata: \n ↪', data);
+    logger.info('📄Locatia incarcata este:\n', `>${data.name}`);
+    historyService.addLocation(data);
+    ui.renderHistory(historyService.getHistory());
+    ui.displayWeather(data);
+    console.log("[HISTORY-LOGS]:\n", logger.getLogs());
+  });
 }
+
 //Functia pentru evenimente:
 const setupEventListeners = () => {
   ui.elements.searchBtn.addEventListener("click",handleSearch)
@@ -195,11 +148,10 @@ elements.settingsBtn.addEventListener("click", function(){
             transition: 0.6s;
         `;
     } else {
-        // inversul animației: ascundere cu întârziere
         btn.classList.remove("show");
         setTimeout(() => {
             btn.style.display = "none";
-        }, 300); // trebuie să fie egal cu timpul din `transition`
+        }, 300);
 
         elements.settingsBtn.style.cssText = "transition: 1s;";
     }
@@ -208,7 +160,9 @@ elements.settingsBtn.addEventListener("click", function(){
 
 //Functie de initializare a datelor din LocalStorage:
 function initializeSettings() {
+    //
     ui.renderHistory(historyService.getHistory())
+    //
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "background-image: url('unicorn_night_animated.gif'); background-repeat:repeat; background-size: cover;") {
         document.querySelector("body").style.cssText = savedTheme;
@@ -232,7 +186,7 @@ function initializeSettings() {
         elements.five.textContent = "VIZIBILITATE:"
         elements.six.textContent = "RASARIT:"
         elements.seven.textContent = "APUS:"
-    } else {
+    } else if(savedLanguage === "en"){
         document.querySelector("html").setAttribute("lang", "en");
         CONFIG.DEFAULT_LANG = savedLanguage
         languageBtn.style.marginLeft = "";
@@ -246,7 +200,14 @@ function initializeSettings() {
         elements.seven.textContent = "SUNRISE:"
     }
     const savedUnite = localStorage.getItem("unite")
-    if (savedUnite === "metric") {
+    if (localStorage.getItem("unite")===null) {
+        localStorage.setItem("unite", "metric")
+        elements.unitsBtn.style.marginLeft= "60px"
+        elements.unitsBtn.textContent="°C"
+        return
+    }else if(localStorage.getItem("unite")!==null){
+        localStorage.setItem("unite", "imperial")
+        if (savedUnite === "metric") {
         CONFIG.DEFAULT_UNITS = savedUnite
         elements.unitsBtn.style.marginLeft= "60px"
         elements.unitsBtn.textContent="°C"
@@ -256,62 +217,61 @@ function initializeSettings() {
         elements.unitsBtn.textContent="°F"
     }
     return
-}
-const handleSearch = async () => { 
-    console.log("==============")
-    ui.showLoading()
-    if (!isValidCity(ui.elements.searchBar.value)) {
-        elements.toShort.style.display = "block"
-        setTimeout(() => {
-            elements.toShort.style.display = ""
-            elements.searchBar.value = ""
-        }, 2000);
-        ui.showError("Orasul nu poate avea mai putin de 3 litere!")
-        return
     }
-    try{
-    const test = historyService.getHistory()
-    if (ui.elements.searchBar.value === "bucuresti" || ui.elements.searchBar.value === "Bucuresti") {
-        const weatherService = await service.getCurrentWeatherWithFallback("București")
-    logger.info("Locatia incarcata este:\n >",weatherService.name)
-    ui.hideLoading()
-    historyService.addLocation(weatherService)
     
-    const newLocation = [{city: weatherService.name, country: weatherService.sys.country, coord: weatherService.coord, timestamp: Date.now()}]
-    // console.log('In storage:', localStorage.getItem(CONFIG.STORAGE_KEYS.SEARCH_HISTORY))
-    logger.info("Locatie identificata \n ↪",weatherService)
-    ui.renderHistory(newLocation)
-    ui.displayWeather(weatherService)
-    console.log("==============")
     return
-    }else{
-    const weatherService = await service.getCurrentWeatherWithFallback(ui.elements.searchBar.value)
-    if (weatherService.name === undefined) {
-        elements.notFoundLocation.style.display = "block"
-        setTimeout(() => {
-            elements.notFoundLocation.style.display = ""
-            elements.searchBar.value = ""
-        }, 2000);
-        throw new Error(`Nu s-au gasit date pentru: "${ui.elements.searchBar.value}"`)
-    }
-    logger.info("Locatia incarcata este:\n >",weatherService.name)
-    ui.hideLoading()
-    historyService.addLocation(weatherService)
-    const resolve = test.find(x=>x.city === weatherService.name)
-if (resolve && resolve.city === weatherService.name) {
-    logger.info("Locatie identificata \n ↪", weatherService)
-    ui.displayWeather(weatherService)
-    console.log("==============")
-    return
-}else if (resolve === undefined){
-    const newLocation = [{city: weatherService.name, country: weatherService.sys.country, coord: weatherService.coord, timestamp: Date.now()}]
-    logger.info("Locatie identificata \n ↪",weatherService)
-    ui.renderHistory(newLocation)
-    ui.displayWeather(weatherService)
-    console.log("==============")
-    return
-    }}}catch (err){
-            ui.showError(err.message)
+}
+const handleSearch = async () => {
+    try {
+        console.log("==============")
+        ui.showLoading()
+
+        const inputValue = ui.elements.searchBar.value.trim()
+
+        if (!isValidCity(inputValue)) {
+            elements.toShort.style.display = "block"
+            setTimeout(() => {
+                elements.toShort.style.display = ""
+                ui.elements.searchBar.value = ""
+            }, 2000)
+            logger.error("Orasul nu poate avea mai putin de 3 litere!", "")
+            return
+        }
+
+        let cityQuery = inputValue.toLowerCase() === "bucuresti" ? "București" : inputValue
+        const weatherService = await service.getCurrentWeatherWithFallback(cityQuery)
+
+        if (!weatherService || !weatherService.name) {
+            elements.notFoundLocation.style.display = "block"
+            setTimeout(() => {
+                elements.notFoundLocation.style.display = ""
+                ui.elements.searchBar.value = ""
+            }, 2000)
+            throw new Error(`Nu s-au găsit date pentru: "${inputValue}"`)
+        }
+
+        logger.info('📄Locatia incarcata este:\n', `>${weatherService.name}`)
+        ui.hideLoading()
+
+
+        const history = historyService.getHistory()
+        const exists = history.find(item => item.city === weatherService.name)
+
+        if (exists) {
+            historyService.moveToTop(weatherService.name)
+        } else {
+            historyService.addLocation(weatherService)
+        }
+
+        ui.renderHistory(historyService.getHistory())
+        ui.displayWeather(weatherService)
+        logger.info('📑Locatie identificata: \n ↪', weatherService)
+
+        console.log("[HISTORY-LOGS]:\n", logger.getLogs())
+        console.log("==============")
+
+    } catch (err) {
+        ui.showError(err.message)
     }
 }
 //
@@ -320,7 +280,8 @@ export const isValidCity = (city) => {
 }
 //
 export const ByDefault = defaults()
-//
+//Functie de initializare a datelor din LocalStorage:
 initializeSettings()
+//
 setupEventListeners()
 //

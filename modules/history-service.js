@@ -30,7 +30,7 @@ addLocation(weatherData) {
   }
 
   this._saveToStorage(history);
-  logger.info(`[History] Locația adăugată:\n >Oras:${city}; \n >Regiune:${country}; \n >Coord: LAT:${coord.lat} - LON:${coord.lon}`);
+  logger.info(`|💾-Locația a fost salvata:\n  >🏢Oras:${city}; \n  >🚩Regiune:${country}; \n  >📡Coord: LAT:${coord.lat} - LON:${coord.lon}`);
 }
 
   getHistory() {
@@ -44,19 +44,19 @@ addLocation(weatherData) {
       (item) => item.city.toLowerCase() !== city.toLowerCase()
     );
     this._saveToStorage(history);
-    console.log(`[History] Locația ștearsă: ${city}`);
+    console.log(`♨️Locația ștearsă: ${city}`);
   }
 
   clearHistory() {
      localStorage.removeItem(this.storageKey);
-    console.log("[History] Istoricul a fost șters complet.");
+    console.log("♨️Istoricul a fost șters complet.");
   }
 
   _saveToStorage(history) {
      try {
     localStorage.setItem(this.storageKey, JSON.stringify(history));
   } catch (error) {
-    console.error("Failed to save to localStorage", error);
+    console.error("‼️Locația nu s-a salvat‼️", error);
   }
   }
   _loadFromStorage() {
@@ -64,10 +64,20 @@ addLocation(weatherData) {
     const data = localStorage.getItem(this.storageKey);
     return data ? JSON.parse(data) : [];
   } catch (error) {
-    console.error("Failed to load from localStorage", error);
+    console.error("‼️Locația nu s-a incarcat‼️", error);
     return [];
   }
   }
+  moveToTop(cityName) {
+        const history = this.getHistory()
+        const index = history.findIndex(item => item.city === cityName)
+
+        if (index !== -1) {
+            const [item] = history.splice(index, 1)
+            history.unshift(item)
+            localStorage.setItem(this.storageKey, JSON.stringify(history))
+        }
+    }
 }
 
 export const historyService = new HistoryService()
