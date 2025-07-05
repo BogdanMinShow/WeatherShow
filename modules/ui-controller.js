@@ -133,6 +133,7 @@ export const renderHistory = (historyItems) => {
             document.getElementById("searchBar").value = data.name;
             console.info("🔎 Locații recente:");
             console.table(test);
+            console.log("[HISTORY-LOGS]:\n", logger.getLogs());
             console.log("==============")
           }
         });
@@ -160,6 +161,7 @@ export const renderHistory = (historyItems) => {
         console.info("🔎 Locații recente:");
         console.table(test);
         console.log("==============")
+        console.log("[HISTORY-LOGS]:\n", logger.getLogs());
       } catch (error) {
         console.error('Eroare la încărcarea vremii:', error);
       } finally {

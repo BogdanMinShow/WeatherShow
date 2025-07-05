@@ -9,18 +9,35 @@ import { CONFIG } from './modules/config.js';
 async function defaults() {
   const coords = await getCoords();
   const ByCoords = await service.getWeatherByCoords(coords.latitude, coords.longitude);
+
+  
   console.log("==============")
   const locationSource = coords.source === 'ip' ? '🛜Locație aproximativă bazată pe:\n ●IP' : '🌐Locație aproximativă bazată pe:\n ●GPS';
   logger.info(locationSource, '');
 
   await service.getCurrentWeatherWithFallback(ByCoords.name).then(async function (data) {
+    const tableData = []
+    const ordinary = {
+      "🏢Orașe": data.name,
+      "🚩Țări": data.sys.country,
+    };
+    tableData.push(ordinary);
+
     ui.showLoading();
 
     logger.info('📑Locatie identificata: \n ↪', data);
     logger.info('📄Locatia incarcata este:\n', `>${data.name}`);
+    if (historyService.getHistory().length === 1 && historyService.getHistory().includes(data.name)) {
+    ui.displayWeather(data);
+    console.table(tableData)
+    console.log("[HISTORY-LOGS]:\n", logger.getLogs());
+    console.log("==============")
+    return
+    }
     historyService.addLocation(data);
     ui.renderHistory(historyService.getHistory());
     ui.displayWeather(data);
+    console.table(tableData)
     console.log("[HISTORY-LOGS]:\n", logger.getLogs());
     console.log("==============")
   });
@@ -175,7 +192,8 @@ function initializeSettings() {
         themeBtn.textContent = "𖤓";
     }
     const savedLanguage = localStorage.getItem("region");
-    if (savedLanguage === "ro") {
+    if (savedLanguage === null) {
+        localStorage.setItem("region", "ro")
         document.querySelector("html").setAttribute("lang", "ro");
         CONFIG.DEFAULT_LANG = savedLanguage
         languageBtn.style.marginLeft = "60px";
@@ -187,7 +205,20 @@ function initializeSettings() {
         elements.five.textContent = "VIZIBILITATE:"
         elements.six.textContent = "RASARIT:"
         elements.seven.textContent = "APUS:"
-    } else if(savedLanguage === "en"){
+    }else{
+        if (savedLanguage === "ro") {
+        document.querySelector("html").setAttribute("lang", "ro");
+        CONFIG.DEFAULT_LANG = savedLanguage
+        languageBtn.style.marginLeft = "60px";
+        languageBtn.textContent = "RO";
+        elements.one.textContent = "STAREA-VREMII:"
+        elements.two.textContent = "UMIDITATEA-DIN-ATMOSFERA:"
+        elements.three.textContent = "PRESIUNEA-ATMOSFERICA:"
+        elements.for.textContent = "VANT:"
+        elements.five.textContent = "VIZIBILITATE:"
+        elements.six.textContent = "RASARIT:"
+        elements.seven.textContent = "APUS:"
+    }else{
         document.querySelector("html").setAttribute("lang", "en");
         CONFIG.DEFAULT_LANG = savedLanguage
         languageBtn.style.marginLeft = "";
@@ -200,6 +231,8 @@ function initializeSettings() {
         elements.six.textContent = "SUNRISE:"
         elements.seven.textContent = "SUNRISE:"
     }
+    }
+    
     const savedUnite = localStorage.getItem("unite")
     if (localStorage.getItem("unite")===null) {
         localStorage.setItem("unite", "metric")
@@ -207,7 +240,6 @@ function initializeSettings() {
         elements.unitsBtn.textContent="°C"
         return
     }else if(localStorage.getItem("unite")!==null){
-        localStorage.setItem("unite", "imperial")
         if (savedUnite === "metric") {
         CONFIG.DEFAULT_UNITS = savedUnite
         elements.unitsBtn.style.marginLeft= "60px"
