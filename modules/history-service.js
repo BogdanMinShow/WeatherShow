@@ -30,7 +30,7 @@ addLocation(weatherData) {
   }
 
   this._saveToStorage(history);
-  logger.info(`|💾-Locația a fost salvata:\n  >🏢Oras:${city}; \n  >🚩Regiune:${country}; \n  >📡Coord: LAT:${coord.lat} - LON:${coord.lon}`);
+  logger.info(`|💾-Locația a fost salvata:\n  >🏢Oras:${city}; \n  >🚩Regiune:${country}; \n  >📡Coord: LAT:${coord.lat} - LON:${coord.lon}`, "");
 }
 
   getHistory() {
