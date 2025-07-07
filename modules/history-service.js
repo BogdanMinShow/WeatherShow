@@ -79,5 +79,4 @@ addLocation(weatherData) {
         }
     }
 }
-
 export const historyService = new HistoryService()

@@ -1,12 +1,14 @@
 body{
     background-image: url('wheather-animation.gif');
     background-repeat:repeat;
+    min-width: 390px;
 }
 #app{
     display: block;
     position:static;
-    min-width: 400px;
-    margin: 10%;
+    content:attr(content);
+    margin: 5%;
+    margin-right: 4%;
     background-color: rgb(144, 209, 202);
     border-radius: 35px;
 }

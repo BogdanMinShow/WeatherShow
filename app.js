@@ -6,24 +6,32 @@ import {getCoords} from './modules/location-service.js';
 import { elements } from './modules/ui-controller.js';
 import { CONFIG } from './modules/config.js';
 // import { SpeedInsights } from "@vercel/speed-insights/react"
+
 //Incarcarea datelor ByDefault:
 async function defaults() {
   const coords = await getCoords();
   const ByCoords = await service.getWeatherByCoords(coords.latitude, coords.longitude);
-
   
   console.log("==============")
   const locationSource = coords.source === 'ip' ? '🛜Locație aproximativă bazată pe:\n ●IP' : '🌐Locație aproximativă bazată pe:\n ●GPS';
   logger.info(locationSource, '');
 
   await service.getCurrentWeatherWithFallback(ByCoords.name).then(async function (data) {
+    const tableData = []
+    const ordinary = {
+      "🏢Orașe": data.name,
+      "🚩Țări": data.sys.country,
+      "📡Coord": `LAT:${data.coord.lat} - LON:${data.coord.lon}`
+    };
+    tableData.push(ordinary);
 
     ui.showLoading();
 
     logger.info('📑Locatie identificata: \n ↪', data);
     logger.info('📄Locatia incarcata este:\n', `>${data.name}`);
-    if (historyService.getHistory().length === 1 && historyService.getHistory().find((x)=>x.city === data.name)) {
+    if (historyService.getHistory().length === 1 && historyService.getHistory().includes(data.name)) {
     ui.displayWeather(data);
+    console.table(tableData)
     console.log("[HISTORY-LOGS]:\n", logger.getLogs());
     console.log("==============")
     return
@@ -31,6 +39,7 @@ async function defaults() {
     historyService.addLocation(data);
     ui.renderHistory(historyService.getHistory());
     ui.displayWeather(data);
+    console.table(tableData)
     console.log("[HISTORY-LOGS]:\n", logger.getLogs());
     console.log("==============")
   });
@@ -40,7 +49,7 @@ async function defaults() {
 const setupEventListeners = () => {
   ui.elements.searchBtn.addEventListener("click",function(){
     handleSearch();
-    elements.searchBar.value = ""
+    elements.searchBar.value = "";
 })
   ui.elements.searchBar.addEventListener("keydown", (x)=>{
     if (x.key==="Enter") {
@@ -48,7 +57,7 @@ const setupEventListeners = () => {
         elements.searchBar.value = ""
     }
   })
-//theme
+//Theme
 elements.themeBtn.addEventListener("click", function(){
     if (elements.themeBtn.style.marginLeft==="60px") {
         elements.themeBtn.style.marginLeft=""
@@ -68,7 +77,7 @@ elements.themeBtn.addEventListener("click", function(){
         document.querySelector("body").style.cssText= localStorage.getItem("theme")
     }
 })
-  //language
+  //Language
   elements.languageBtn.addEventListener("click", function(){
     if (elements.languageBtn.style.marginLeft==="60px") {
         elements.languageBtn.style.marginLeft= ""
@@ -114,7 +123,7 @@ elements.themeBtn.addEventListener("click", function(){
         return
     }
 })
-//units
+//Units
 elements.unitsBtn.addEventListener("click", function(){
     if (elements.unitsBtn.style.marginLeft==="60px") {
         elements.unitsBtn.style.marginLeft= ""
@@ -177,7 +186,7 @@ elements.settingsBtn.addEventListener("click", function(){
 function initializeSettings() {
     //
     ui.renderHistory(historyService.getHistory())
-    //
+    // THEME
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "background-image: url('unicorn_night_animated.gif'); background-repeat:repeat; background-size: cover;") {
         document.querySelector("body").style.cssText = savedTheme;
@@ -188,7 +197,9 @@ function initializeSettings() {
         themeBtn.style.marginLeft = "60px";
         themeBtn.textContent = "𖤓";
     }
+    // LANGUAGE
     const savedLanguage = localStorage.getItem("region");
+    if (savedLanguage === "ro") {
     if (savedLanguage === null) {
         localStorage.setItem("region", "ro")
         document.querySelector("html").setAttribute("lang", "ro");
@@ -215,6 +226,7 @@ function initializeSettings() {
         elements.five.textContent = "VIZIBILITATE:"
         elements.six.textContent = "RASARIT:"
         elements.seven.textContent = "APUS:"
+    } else if(savedLanguage === "en"){
     }else{
         document.querySelector("html").setAttribute("lang", "en");
         CONFIG.DEFAULT_LANG = savedLanguage
@@ -229,7 +241,7 @@ function initializeSettings() {
         elements.seven.textContent = "SUNRISE:"
     }
     }
-    
+    // UNITE
     const savedUnite = localStorage.getItem("unite")
     if (localStorage.getItem("unite")===null) {
         localStorage.setItem("unite", "metric")
@@ -237,6 +249,7 @@ function initializeSettings() {
         elements.unitsBtn.textContent="°C"
         return
     }else if(localStorage.getItem("unite")!==null){
+        localStorage.setItem("unite", "imperial")
         if (savedUnite === "metric") {
         CONFIG.DEFAULT_UNITS = savedUnite
         elements.unitsBtn.style.marginLeft= "60px"
@@ -248,9 +261,9 @@ function initializeSettings() {
     }
     return
     }
-    
     return
-}
+}}
+// Functia de search:
 const handleSearch = async () => {
     try {
         console.log("==============")
@@ -258,21 +271,13 @@ const handleSearch = async () => {
 
         const inputValue = ui.elements.searchBar.value.trim()
 
-        if (inputValue.length<=2) {
+         if (!isValidCity(inputValue)) {
             elements.toShort.style.display = "block"
             setTimeout(() => {
                 elements.toShort.style.display = ""
                 ui.elements.searchBar.value = ""
             }, 2000)
             logger.error("Orasul nu poate avea mai putin de 3 litere!", "")
-            return
-        }else if (!isValidCity(inputValue)) {
-            elements.notFoundLocation.style.display = "block"
-            setTimeout(() => {
-                elements.notFoundLocation.style.display = ""
-                ui.elements.searchBar.value = ""
-            }, 2000)
-            logger.error("Orasul nu poate fii gasit!", "")
             return
         }
 
@@ -305,38 +310,11 @@ const handleSearch = async () => {
         ui.displayWeather(weatherService)
         logger.info('📑Locatie identificata: \n ↪', weatherService)
 
-        const tableData = [];
-
-        historyService.getHistory().forEach(x=> {
-            const getTimeAgo = (timestamp) => {
-      const now = Date.now();
-      const diff = now - timestamp;
-      const sec = Math.floor(diff / 1000);
-      const min = Math.floor(sec / 60);
-      const hour = Math.floor(min / 60);
-      const days = Math.floor(hour / 24);
-
-      if (sec < 60) return `${sec} secunde în urmă`;
-      if (min < 60) return `${min} minute în urmă`;
-      if (hour < 24) return `${hour} ore în urmă`;
-      return `${days} zile în urmă`;
-    };
-
-    const time = getTimeAgo(x.timestamp);
-            const ordinary = {
-            "🏢Orașe": x.city,
-            "🚩Țări": x.country,
-            "⏰Timp": time
-        };
-        tableData.push(ordinary);
-        });
-
-        console.table(tableData)
         console.log("[HISTORY-LOGS]:\n", logger.getLogs())
         console.log("==============")
 
     } catch (err) {
-        ui.showError(err.message)
+        logger.error(err.message,"")
     }
 }
 //
@@ -347,6 +325,5 @@ export const isValidCity = (city) => {
 export const ByDefault = defaults()
 //Functie de initializare a datelor din LocalStorage:
 initializeSettings()
-//
+//Functia de lansare a EventListeners-urilor:
 setupEventListeners()
-//

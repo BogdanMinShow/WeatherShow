@@ -54,8 +54,19 @@ Demo live disponibil aici:
 
 ### 📸Screenshots
 
-![Screenshot Desktop (ON)](./screenshot-desktopOFFApp.png) - ![Screenshot Desktop (OFF)](./screenshot-desktopONApp.png)
-![Screenshot Mobile (ON)](./screenshot-mobileONApp.png) - ![Screenshot Mobile (OFF)](./screenshot-mobileOFFApp.png)
+## Screenshot Desktop (ON):
+![Screenshot Desktop (ON)](./screenshot-desktopOFFApp.png)
+===========================
+## Screenshot Desktop (OFF):
+![Screenshot Desktop (OFF)](./screenshot-desktopONApp.png)
+===========================
+## Screenshot Mobile (ON):
+![Screenshot Mobile (ON)](./screenshot-mobileONApp.png)
+===========================
+## Screenshot Mobile (OFF):
+![Screenshot Mobile (OFF)](./screenshot-mobileOFFApp.png)
+===========================
+## Istoric Căutări:
 ![Istoric Căutări](./screenshot-history.png)
 
 ---
@@ -80,6 +91,7 @@ cd Weather-App
 ```
 ## 👤 Autor
 
-**Bogdan Pasca** (aka _BogdanMinShow_)
+**Pasca Bogdan** (aka _BogdanMinShow_)
 
 - 💼 GitHub: [@BogdanMinShow](https://github.com/BogdanMinShow)
+- 💠 LinkedIn: [@PascaBodgan](www.linkedin.com/in/pasca-bogdan-4a469a366)

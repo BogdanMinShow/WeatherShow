@@ -46,9 +46,7 @@ border-radius: 10px;
 padding: 5px;
 font-size: 20px;
 `
-
-// //
-
+// FUNCTIA DE RANDARE A BUTOANELOR //
 export const renderHistory = (historyItems) => {
   const container = document.getElementById("recentSearch");
   const message = document.getElementById("mesage");
@@ -58,7 +56,6 @@ export const renderHistory = (historyItems) => {
     return;
   }
 
-  // Ștergem TOȚI copiii din container, EXCEPTÂND elementul cu id="mesage"
   Array.from(container.children).forEach(child => {
     if (child.id !== "mesage") {
       container.removeChild(child);
@@ -94,7 +91,6 @@ export const renderHistory = (historyItems) => {
     btn.textContent = x.city;
     btn.setAttribute("id", "locationBtn")
 
-    // Toggle butonul de ștergere la click simplu
     btn.addEventListener("click", function (e) {
       e.stopPropagation();
 
@@ -140,7 +136,6 @@ export const renderHistory = (historyItems) => {
       }
     });
 
-    // Dublu click pentru căutarea orașului
     btn.addEventListener("dblclick", async function (e) {
       e.stopPropagation();
 
@@ -172,7 +167,7 @@ export const renderHistory = (historyItems) => {
     container.appendChild(btn);
   });
 };
-//
+//  //
 export function showLoading() {
     elements.loader.style.display = "none"
     logger.info("🔁Detectez locația...", "")
@@ -194,7 +189,6 @@ export function showMessage(text){
 //Ilustrare grafica:
 export const displayWeather = (weatherData) => {
     if (weatherData) {
-        // elements.AfterMesage.appendChild(elements.recentObject)
         const accesKey = weatherData
     elements.locationName.textContent=accesKey.name.toUpperCase()
         const celsiusTemp = accesKey.main.temp
@@ -232,7 +226,6 @@ export const displayWeather = (weatherData) => {
                 elements.WeatherImg.setAttribute("container","☁️")
             }
         }
-        
         elements.temp.setAttribute("data-unit",celsiusTemp.toFixed(1) + elements.unitsBtn.textContent) 
     elements.tempCaracter.textContent=accesKey.weather[0].description.toUpperCase()
     elements.Umidity.textContent=accesKey.main.humidity + " %"
