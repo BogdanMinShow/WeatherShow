@@ -2,7 +2,7 @@
 
 > Aplicație web completă care oferă date meteo în timp real, construită cu JavaScript pur și integrând API-uri reale și tehnici moderne.
 
-[Demo Live](https://weather-app-eight-mu-56.vercel.app) | [Cod Sursă](https://github.com/BogdanMinShow/Weather-App)
+[Demo Live](https://weathershow25.vercel.app/) | [Cod Sursă](https://github.com/BogdanMinShow/Weather-App)
 
 ---
 
@@ -50,7 +50,7 @@ Un mare plus al aplicației este detectarea automată a locației utilizatorului
 ## 🚀 Demo și Screenshots
 
 Demo live disponibil aici:  
-[https://weather-app-eight-mu-56.vercel.app](https://BogdanMinShow.github.io/Weather-App)
+[https://weathershow25.vercel.app/](https://BogdanMinShow.github.io/Weather-App)
 
 ### 📸Screenshots
 
@@ -76,7 +76,8 @@ Demo live disponibil aici:
 ### Cerințe
 
 - Browser modern (Chrome, Edge)
-- Cheie API OpenWeatherMap **(gratuită)** 📛genereaza errori📛
+- Cheie API OpenWeatherMap **(gratuită)** 📛genereaza errori [DUPA: 1000*/day]📛
+- Cheie API ipapi **(gratuită)** 📛genereaza errori [DUPA: 30.000*/month]📛
 
 ### Setup local
 
@@ -89,9 +90,22 @@ cd Weather-App
 
 # Deschide index.html în browser
 ```
+## ✳️ Future-Updates
+### Mid-Updates:
+---
+- [ ] Buton de crear pentru toate locatiile recente;
+- [ ] Functionarea cautarii recente si pe telefon;
+- [ ] Generarea vremii pe o perioada de n zile (3);
+---
+### Big-Updates:
+---
+- [ ] Crearea unei baze de date;
+- [ ] Configurarea;
+---
+##
 ## 👤 Autor
 
 **Pasca Bogdan** (aka _BogdanMinShow_)
 
 - 💼 GitHub: [@BogdanMinShow](https://github.com/BogdanMinShow)
-- 💠 LinkedIn: [@PascaBodgan](www.linkedin.com/in/pasca-bogdan-4a469a366)
+- 💠 LinkedIn [Pasca Bodgan]: www.linkedin.com/in/pasca-bogdan-4a469a366
