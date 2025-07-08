@@ -199,11 +199,7 @@ function initializeSettings() {
     }
     // LANGUAGE
     const savedLanguage = localStorage.getItem("region");
-    if (savedLanguage === "ro") {
     if (savedLanguage === null) {
-        localStorage.setItem("region", "ro")
-        document.querySelector("html").setAttribute("lang", "ro");
-        CONFIG.DEFAULT_LANG = savedLanguage
         languageBtn.style.marginLeft = "60px";
         languageBtn.textContent = "RO";
         elements.one.textContent = "STAREA-VREMII:"
@@ -226,7 +222,6 @@ function initializeSettings() {
         elements.five.textContent = "VIZIBILITATE:"
         elements.six.textContent = "RASARIT:"
         elements.seven.textContent = "APUS:"
-    } else if(savedLanguage === "en"){
     }else{
         document.querySelector("html").setAttribute("lang", "en");
         CONFIG.DEFAULT_LANG = savedLanguage
@@ -239,17 +234,14 @@ function initializeSettings() {
         elements.five.textContent = "VISIBILITY:"
         elements.six.textContent = "SUNRISE:"
         elements.seven.textContent = "SUNRISE:"
-    }
-    }
+    }}
     // UNITE
     const savedUnite = localStorage.getItem("unite")
-    if (localStorage.getItem("unite")===null) {
-        localStorage.setItem("unite", "metric")
+    if (savedUnite===null) {
         elements.unitsBtn.style.marginLeft= "60px"
         elements.unitsBtn.textContent="°C"
         return
-    }else if(localStorage.getItem("unite")!==null){
-        localStorage.setItem("unite", "imperial")
+    }else{
         if (savedUnite === "metric") {
         CONFIG.DEFAULT_UNITS = savedUnite
         elements.unitsBtn.style.marginLeft= "60px"
@@ -258,11 +250,9 @@ function initializeSettings() {
         CONFIG.DEFAULT_UNITS = savedUnite
         elements.unitsBtn.style.marginLeft= ""
         elements.unitsBtn.textContent="°F"
-    }
+    }}
     return
-    }
-    return
-}}
+}
 // Functia de search:
 const handleSearch = async () => {
     try {
@@ -309,6 +299,34 @@ const handleSearch = async () => {
         ui.renderHistory(historyService.getHistory())
         ui.displayWeather(weatherService)
         logger.info('📑Locatie identificata: \n ↪', weatherService)
+
+        const tableData = [];
+
+        historyService.getHistory().forEach(x=> {
+            const getTimeAgo = (timestamp) => {
+      const now = Date.now();
+      const diff = now - timestamp;
+      const sec = Math.floor(diff / 1000);
+      const min = Math.floor(sec / 60);
+      const hour = Math.floor(min / 60);
+      const days = Math.floor(hour / 24);
+
+      if (sec < 60) return `${sec} secunde în urmă`;
+      if (min < 60) return `${min} minute în urmă`;
+      if (hour < 24) return `${hour} ore în urmă`;
+      return `${days} zile în urmă`;
+    };
+
+    const time = getTimeAgo(x.timestamp);
+            const ordinary = {
+            "🏢Orașe": x.city,
+            "🚩Țări": x.country,
+            "⏰Timp": time
+        };
+        tableData.push(ordinary);
+        });
+
+        console.table(tableData)
 
         console.log("[HISTORY-LOGS]:\n", logger.getLogs())
         console.log("==============")
