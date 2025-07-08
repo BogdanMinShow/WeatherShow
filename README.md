@@ -54,10 +54,10 @@ Demo live disponibil aici:
 
 ### 📸Screenshots
 
-## Screenshot Desktop (ON):
+## Screenshot Desktop (OFF):
 ![Screenshot Desktop (ON)](./screenshot-desktopOFFApp.png)
 ===========================
-## Screenshot Desktop (OFF):
+## Screenshot Desktop (ON):
 ![Screenshot Desktop (OFF)](./screenshot-desktopONApp.png)
 ===========================
 ## Screenshot Mobile (ON):
