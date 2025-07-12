@@ -335,3 +335,8 @@ body{
         opacity: 1;
     }
 }
+#auto-locate{
+    display: inline-block;
+    zoom: 3;
+    width: 1em;
+}

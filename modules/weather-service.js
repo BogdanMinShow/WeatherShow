@@ -1,4 +1,4 @@
-import { ByDefault } from '../app.js'
+import { defaults } from '../app.js'
 import { CONFIG, API_ENDPOINTS, ERROR_MESSAGES} from './config.js'
 //Functia ge gasire a vremii:
 export const getCurrentWeather = async (city) => {
@@ -14,7 +14,7 @@ export const getCurrentWeatherWithFallback = async (city) => {
   } catch (error) {
     console.warn('Locatia ramane ultima: \n ↪ERROR:', error.message)
     return {
-      ...ByDefault,
+      ...defaults(),
       isFallback: true,
       fallbackReason: error.message,
     }

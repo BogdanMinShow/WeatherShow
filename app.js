@@ -6,9 +6,23 @@ import {getCoords} from './modules/location-service.js';
 import { elements } from './modules/ui-controller.js';
 import { CONFIG } from './modules/config.js';
 // import { SpeedInsights } from "@vercel/speed-insights/react"
-
+const autoLocate = localStorage.getItem("autolocate");
+    if (autoLocate === null) {
+        elements.autoLocate.setAttribute("checked", "true");
+        localStorage.setItem("autolocate", "true");
+    }else{
+    if (autoLocate === "true") {
+        elements.autoLocate.removeAttribute("unchecked");
+        elements.autoLocate.setAttribute("checked", "true");
+        localStorage.setItem("autolocate", "true");
+    } else {
+        elements.autoLocate.removeAttribute("checked");
+        elements.autoLocate.setAttribute("unchecked", "true");
+        localStorage.setItem("autolocate", "false");
+        
+    }}
 //Incarcarea datelor ByDefault:
-async function defaults() {
+export async function defaults() {
   const coords = await getCoords();
   const ByCoords = await service.getWeatherByCoords(coords.latitude, coords.longitude);
   
@@ -16,16 +30,46 @@ async function defaults() {
   const locationSource = coords.source === 'ip' ? '🛜Locație aproximativă bazată pe:\n ●IP' : '🌐Locație aproximativă bazată pe:\n ●GPS';
   logger.info(locationSource, '');
 
-  await service.getCurrentWeatherWithFallback(ByCoords.name).then(async function (data) {
-    const tableData = []
+  let data = await service.getCurrentWeatherWithFallback(ByCoords.name).then(async (data)=> data)
+    
+    ui.showLoading();
+
+    if (data.sys.country === "RO") {
+            document.querySelector("html").setAttribute("lang", "ro");
+        CONFIG.DEFAULT_LANG = "ro"
+        languageBtn.style.marginLeft = "60px";
+        languageBtn.textContent = "RO";
+        elements.one.textContent = "STAREA-VREMII:"
+        elements.two.textContent = "UMIDITATEA-DIN-ATMOSFERA:"
+        elements.three.textContent = "PRESIUNEA-ATMOSFERICA:"
+        elements.for.textContent = "VANT:"
+        elements.five.textContent = "VIZIBILITATE:"
+        elements.six.textContent = "RASARIT:"
+        elements.seven.textContent = "APUS:"
+        }
+        if (data.sys.country !== "RO"){
+        document.querySelector("html").setAttribute("lang", "en");
+        CONFIG.DEFAULT_LANG = "en"
+        languageBtn.style.marginLeft = "";
+        languageBtn.textContent = "EN";
+        elements.one.textContent = "WEATHER:"
+        elements.two.textContent = "HUMIDITY:"
+        elements.three.textContent = "AIR PRESSURE:"
+        elements.for.textContent = "WIND:"
+        elements.five.textContent = "VISIBILITY:"
+        elements.six.textContent = "SUNRISE:"
+        elements.seven.textContent = "SUNRISE:"
+        }
+
+        data = await service.getCurrentWeatherWithFallback(ByCoords.name).then(async (data)=> data)
+
+        const tableData = []
     const ordinary = {
       "🏢Orașe": data.name,
       "🚩Țări": data.sys.country,
       "📡Coord": `LAT:${data.coord.lat} - LON:${data.coord.lon}`
     };
     tableData.push(ordinary);
-
-    ui.showLoading();
 
     logger.info('📑Locatie identificata: \n ↪', data);
     logger.info('📄Locatia incarcata este:\n', `>${data.name}`);
@@ -42,7 +86,6 @@ async function defaults() {
     console.table(tableData)
     console.log("[HISTORY-LOGS]:\n", logger.getLogs());
     console.log("==============")
-  });
 }
 
 //Functia pentru evenimente:
@@ -98,7 +141,7 @@ elements.themeBtn.addEventListener("click", function(){
             ui.displayWeather(data)
         })
         elements.one.textContent = "STAREA-VREMII:"
-        elements.two.textContent = "UMIDITATEA-DIN-ATMOSFERA:"
+        elements.two.textContent = "UMIDITATEA:"
         elements.three.textContent = "PRESIUNEA-ATMOSFERICA:"
         elements.for.textContent = "VANT:"
         elements.five.textContent = "VIZIBILITATE:"
@@ -180,6 +223,19 @@ elements.settingsBtn.addEventListener("click", function(){
         elements.settingsBtn.style.cssText = "transition: 1s;";
     }
 })
+elements.autoLocate.addEventListener("click", function () {
+    const isChecked = elements.autoLocate.hasAttribute("checked");
+
+    if (isChecked) {
+        elements.autoLocate.removeAttribute("checked");
+        elements.autoLocate.setAttribute("unchecked", "true");
+        localStorage.setItem("autolocate", "false");
+    } else {
+        elements.autoLocate.setAttribute("checked", "true");
+        elements.autoLocate.removeAttribute("unchecked");
+        localStorage.setItem("autolocate", "true");
+    }
+});
 }
 
 //Functie de initializare a datelor din LocalStorage:
@@ -203,7 +259,7 @@ function initializeSettings() {
         languageBtn.style.marginLeft = "60px";
         languageBtn.textContent = "RO";
         elements.one.textContent = "STAREA-VREMII:"
-        elements.two.textContent = "UMIDITATEA-DIN-ATMOSFERA:"
+        elements.two.textContent = "UMIDITATEA:"
         elements.three.textContent = "PRESIUNEA-ATMOSFERICA:"
         elements.for.textContent = "VANT:"
         elements.five.textContent = "VIZIBILITATE:"
@@ -251,8 +307,9 @@ function initializeSettings() {
         elements.unitsBtn.style.marginLeft= ""
         elements.unitsBtn.textContent="°F"
     }}
-    return
-}
+    // AUTO-LOCATE
+    
+    }
 // Functia de search:
 const handleSearch = async () => {
     try {
@@ -272,7 +329,7 @@ const handleSearch = async () => {
         }
 
         let cityQuery = inputValue.toLowerCase() === "bucuresti" ? "București" : inputValue
-        const weatherService = await service.getCurrentWeatherWithFallback(cityQuery)
+        let weatherService = await service.getCurrentWeatherWithFallback(cityQuery)
 
         if (!weatherService || !weatherService.name) {
             elements.notFoundLocation.style.display = "block"
@@ -282,6 +339,34 @@ const handleSearch = async () => {
             }, 2000)
             throw new Error(`Nu s-au găsit date pentru: "${inputValue}"`)
         }
+        // if (historyService.getHistory()[0].country === "RO") (TEST FUNCTIONAL)
+        if (weatherService.sys.country === "RO") {
+        document.querySelector("html").setAttribute("lang", "ro");
+        CONFIG.DEFAULT_LANG = "ro"
+        languageBtn.style.marginLeft = "60px";
+        languageBtn.textContent = "RO";
+        elements.one.textContent = "STAREA-VREMII:"
+        elements.two.textContent = "UMIDITATEA-DIN-ATMOSFERA:"
+        elements.three.textContent = "PRESIUNEA-ATMOSFERICA:"
+        elements.for.textContent = "VANT:"
+        elements.five.textContent = "VIZIBILITATE:"
+        elements.six.textContent = "RASARIT:"
+        elements.seven.textContent = "APUS:"
+        }else{
+        document.querySelector("html").setAttribute("lang", "en");
+        CONFIG.DEFAULT_LANG = "en"
+        languageBtn.style.marginLeft = "";
+        languageBtn.textContent = "EN";
+        elements.one.textContent = "WEATHER:"
+        elements.two.textContent = "HUMIDITY:"
+        elements.three.textContent = "AIR PRESSURE:"
+        elements.for.textContent = "WIND:"
+        elements.five.textContent = "VISIBILITY:"
+        elements.six.textContent = "SUNRISE:"
+        elements.seven.textContent = "SUNRISE:"
+        }
+
+        weatherService = await service.getCurrentWeatherWithFallback(cityQuery)
 
         logger.info('📄Locatia incarcata este:\n', `>${weatherService.name}`)
         ui.hideLoading()
@@ -340,8 +425,17 @@ export const isValidCity = (city) => {
   return city.length >= 2 && /^[a-zA-ZăâîșțĂÂÎȘȚ\s-]+$/.test(city.trim());
 }
 //
-export const ByDefault = defaults()
+if (elements.autoLocate.hasAttribute("checked")===true) {
+    defaults()
+}else{
+if (historyService.getHistory().length>0) {
+    elements.searchBar.value = historyService.getHistory()[0].city
+    handleSearch()
+}else{
+    defaults()
+}}
+
 //Functie de initializare a datelor din LocalStorage:
-initializeSettings()
+await initializeSettings()
 //Functia de lansare a EventListeners-urilor:
 setupEventListeners()

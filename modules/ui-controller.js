@@ -1,3 +1,4 @@
+import { CONFIG } from './config.js'
 import { historyService } from './history-service.js'
 import { logger } from './logger.js'
 import {getCurrentWeatherWithFallback} from './weather-service.js'
@@ -33,7 +34,8 @@ export const elements = {
   toShort: document.querySelector("#toShort"),
   AfterMesage: document.querySelector("#recentSearch"),
   recentObject: document.createElement("button"),
-  searchH: document.querySelector("#searchH")
+  searchH: document.querySelector("#searchH"),
+  autoLocate: document.querySelector("#auto-locate")
   // ... restul elementelor
 }
 // RECENT-OBJEXT.STYLES: //
@@ -46,6 +48,8 @@ border-radius: 10px;
 padding: 5px;
 font-size: 20px;
 `
+//
+// elements.autoLocate.setAttribute("checked", "true")
 // FUNCTIA DE RANDARE A BUTOANELOR //
 export const renderHistory = (historyItems) => {
   const container = document.getElementById("recentSearch");
@@ -127,6 +131,9 @@ export const renderHistory = (historyItems) => {
             console.info('📄 Locatia incarcata este(AUTO):\n', `>${data.name}`);
             displayWeather(data);
             document.getElementById("searchBar").value = data.name;
+            setTimeout(() => {
+              document.getElementById("searchBar").value = ""
+            }, 1000);
             console.info("🔎 Locații recente:");
             console.table(test);
             console.log("[HISTORY-LOGS]:\n", logger.getLogs());
@@ -143,7 +150,36 @@ export const renderHistory = (historyItems) => {
       searchBar.value = x.city;
 
       try {
-        const data = await getCurrentWeatherWithFallback(x.city);
+        let data = await getCurrentWeatherWithFallback(x.city);
+        // if (historyService.getHistory()[0].country === "RO") (TEST FUNCTIONAL)
+        if (data.sys.country === "RO") {
+                document.querySelector("html").setAttribute("lang", "ro");
+                CONFIG.DEFAULT_LANG = "ro"
+                languageBtn.style.marginLeft = "60px";
+                languageBtn.textContent = "RO";
+                elements.one.textContent = "STAREA-VREMII:"
+                elements.two.textContent = "UMIDITATEA-DIN-ATMOSFERA:"
+                elements.three.textContent = "PRESIUNEA-ATMOSFERICA:"
+                elements.for.textContent = "VANT:"
+                elements.five.textContent = "VIZIBILITATE:"
+                elements.six.textContent = "RASARIT:"
+                elements.seven.textContent = "APUS:"
+                }else{
+                document.querySelector("html").setAttribute("lang", "en");
+                CONFIG.DEFAULT_LANG = "en";
+                languageBtn.style.marginLeft = "";
+                languageBtn.textContent = "EN";
+                elements.one.textContent = "WEATHER:"
+                elements.two.textContent = "HUMIDITY:"
+                elements.three.textContent = "AIR PRESSURE:"
+                elements.for.textContent = "WIND:"
+                elements.five.textContent = "VISIBILITY:"
+                elements.six.textContent = "SUNRISE:"
+                elements.seven.textContent = "SUNRISE:"
+                }
+
+                data = await getCurrentWeatherWithFallback(x.city);
+
         const test = tableData.filter((x) => x !== ordinary);
         test.unshift(ordinary);
         console.log("==============")
@@ -151,8 +187,17 @@ export const renderHistory = (historyItems) => {
         console.info('📑 Locatie identificata: \n ↪', data);
         hideLoading();
         console.info('📄 Locatia incarcata este:\n', `>${data.name}`);
+        const history = historyService.getHistory()
+        const exists = history.find(item => item.city === data.name)
+        if (exists) {
+            historyService.moveToTop(data.name)
+        }
+        renderHistory(historyService.getHistory())
         displayWeather(data);
         document.getElementById("searchBar").value = data.name;
+        setTimeout(() => {
+              document.getElementById("searchBar").value = ""
+            }, 1000);
         console.info("🔎 Locații recente:");
         console.table(test);
         console.log("==============")
