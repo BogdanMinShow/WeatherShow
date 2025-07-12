@@ -93,14 +93,14 @@ cd Weather-App
 ## ✳️ Future-Updates
 ### Mid-Updates:
 ---
-- [ ] Buton de crear pentru toate locatiile recente;
+- [ ] Buton de creare pentru toate locatiile recente;
 - [ ] Functionarea cautarii recente si pe telefon;
 - [ ] Generarea vremii pe o perioada de n zile (3);
 ---
 ### Big-Updates:
 ---
 - [ ] Crearea unei baze de date;
-- [ ] Configurarea;
+- [ ] Configurarea cu react;
 ---
 ##
 ## 👤 Autor
