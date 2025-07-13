@@ -6,21 +6,28 @@ import {getCoords} from './modules/location-service.js';
 import { elements } from './modules/ui-controller.js';
 import { CONFIG } from './modules/config.js';
 // import { SpeedInsights } from "@vercel/speed-insights/react"
+//
 const autoLocate = localStorage.getItem("autolocate");
     if (autoLocate === null) {
         elements.autoLocate.setAttribute("checked", "true");
         localStorage.setItem("autolocate", "true");
+        elements.autoLocateBtn.style.marginLeft="60px"
+        elements.autoLocateBtn.textContent="YES"
     }else{
     if (autoLocate === "true") {
         elements.autoLocate.removeAttribute("unchecked");
         elements.autoLocate.setAttribute("checked", "true");
         localStorage.setItem("autolocate", "true");
+        elements.autoLocateBtn.style.marginLeft="60px"
+        elements.autoLocateBtn.textContent="YES"
     } else {
         elements.autoLocate.removeAttribute("checked");
         elements.autoLocate.setAttribute("unchecked", "true");
         localStorage.setItem("autolocate", "false");
-        
+        elements.autoLocateBtn.style.marginLeft=""
+        elements.autoLocateBtn.textContent="NO"
     }}
+//
 //Incarcarea datelor ByDefault:
 export async function defaults() {
   const coords = await getCoords();
@@ -194,6 +201,7 @@ elements.unitsBtn.addEventListener("click", function(){
     }
     return
 })
+
 // SETTINGS
 elements.settingsBtn.addEventListener("click", function(){
     const btn = elements.btnContainer;
@@ -223,6 +231,7 @@ elements.settingsBtn.addEventListener("click", function(){
         elements.settingsBtn.style.cssText = "transition: 1s;";
     }
 })
+// AUTO-LOCATE
 elements.autoLocate.addEventListener("click", function () {
     const isChecked = elements.autoLocate.hasAttribute("checked");
 
@@ -230,10 +239,14 @@ elements.autoLocate.addEventListener("click", function () {
         elements.autoLocate.removeAttribute("checked");
         elements.autoLocate.setAttribute("unchecked", "true");
         localStorage.setItem("autolocate", "false");
+        elements.autoLocateBtn.style.marginLeft=""
+        elements.autoLocateBtn.textContent="NO"
     } else {
         elements.autoLocate.setAttribute("checked", "true");
         elements.autoLocate.removeAttribute("unchecked");
         localStorage.setItem("autolocate", "true");
+        elements.autoLocateBtn.style.marginLeft="60px"
+        elements.autoLocateBtn.textContent="YES"
     }
 });
 }
@@ -296,7 +309,6 @@ function initializeSettings() {
     if (savedUnite===null) {
         elements.unitsBtn.style.marginLeft= "60px"
         elements.unitsBtn.textContent="°C"
-        return
     }else{
         if (savedUnite === "metric") {
         CONFIG.DEFAULT_UNITS = savedUnite
@@ -425,17 +437,20 @@ export const isValidCity = (city) => {
   return city.length >= 2 && /^[a-zA-ZăâîșțĂÂÎȘȚ\s-]+$/.test(city.trim());
 }
 //
-if (elements.autoLocate.hasAttribute("checked")===true) {
-    defaults()
+if (elements.autoLocate.hasAttribute("checked")) {
+    await defaults()
 }else{
 if (historyService.getHistory().length>0) {
     elements.searchBar.value = historyService.getHistory()[0].city
-    handleSearch()
+    await handleSearch()
+    setTimeout(() => {
+        elements.searchBar.value = ""
+    }, 650);
 }else{
-    defaults()
+    await defaults()
 }}
 
 //Functie de initializare a datelor din LocalStorage:
-await initializeSettings()
+initializeSettings()
 //Functia de lansare a EventListeners-urilor:
 setupEventListeners()

@@ -19,6 +19,7 @@ export const elements = {
   themeBtn: document.querySelector("#themeBtn"),
   languageBtn: document.querySelector("#languageBtn"),
   unitsBtn: document.querySelector("#unitsBtn"),
+  autoLocateBtn: document.querySelector("#auto-locateBtn"),
   WeatherImg: document.querySelector("#WeatherImg"),
   one: document.querySelector("#one"),
   two: document.querySelector("#two"),
@@ -99,16 +100,26 @@ export const renderHistory = (historyItems) => {
       e.stopPropagation();
 
       let deleteBtn = btn.querySelector(".deleteBtn");
+      let acceptBtn = btn.querySelector(".acceptBtn")
       if (deleteBtn) {
         deleteBtn.remove();
+      }
+      if (acceptBtn) {
+        acceptBtn.remove()
       } else {
         deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "[ X ]";
+        deleteBtn.textContent = "[ ✕ ]";
         deleteBtn.className = "deleteBtn";
         deleteBtn.setAttribute("id","deleteBtn")
 
-        btn.appendChild(deleteBtn);
+        acceptBtn = document.createElement("button");
+        acceptBtn.textContent = "[ ✓ ]";
+        acceptBtn.className = "acceptBtn";
+        acceptBtn.setAttribute("id","acceptBtn")
 
+        btn.appendChild(acceptBtn)
+        btn.appendChild(deleteBtn)
+        
         deleteBtn.addEventListener("click", async function (event) {
           event.stopPropagation();
 
@@ -140,6 +151,71 @@ export const renderHistory = (historyItems) => {
             console.log("==============")
           }
         });
+        acceptBtn.addEventListener("click", async function(e){
+          e.stopPropagation();
+
+      const searchBar = document.getElementById("searchBar");
+      searchBar.value = x.city;
+
+      try {
+        let data = await getCurrentWeatherWithFallback(x.city);
+        // if (historyService.getHistory()[0].country === "RO") (TEST FUNCTIONAL)
+        if (data.sys.country === "RO") {
+                document.querySelector("html").setAttribute("lang", "ro");
+                CONFIG.DEFAULT_LANG = "ro"
+                languageBtn.style.marginLeft = "60px";
+                languageBtn.textContent = "RO";
+                elements.one.textContent = "STAREA-VREMII:"
+                elements.two.textContent = "UMIDITATEA-DIN-ATMOSFERA:"
+                elements.three.textContent = "PRESIUNEA-ATMOSFERICA:"
+                elements.for.textContent = "VANT:"
+                elements.five.textContent = "VIZIBILITATE:"
+                elements.six.textContent = "RASARIT:"
+                elements.seven.textContent = "APUS:"
+                }else{
+                document.querySelector("html").setAttribute("lang", "en");
+                CONFIG.DEFAULT_LANG = "en";
+                languageBtn.style.marginLeft = "";
+                languageBtn.textContent = "EN";
+                elements.one.textContent = "WEATHER:"
+                elements.two.textContent = "HUMIDITY:"
+                elements.three.textContent = "AIR PRESSURE:"
+                elements.for.textContent = "WIND:"
+                elements.five.textContent = "VISIBILITY:"
+                elements.six.textContent = "SUNRISE:"
+                elements.seven.textContent = "SUNRISE:"
+                }
+
+                data = await getCurrentWeatherWithFallback(x.city);
+
+        const test = tableData.filter((x) => x !== ordinary);
+        test.unshift(ordinary);
+        console.log("==============")
+        showLoading();
+        console.info('📑 Locatie identificata: \n ↪', data);
+        hideLoading();
+        console.info('📄 Locatia incarcata este:\n', `>${data.name}`);
+        const history = historyService.getHistory()
+        const exists = history.find(item => item.city === data.name)
+        if (exists) {
+            historyService.moveToTop(data.name)
+        }
+        renderHistory(historyService.getHistory())
+        displayWeather(data);
+        document.getElementById("searchBar").value = data.name;
+        setTimeout(() => {
+              document.getElementById("searchBar").value = ""
+            }, 1000);
+        console.info("🔎 Locații recente:");
+        console.table(test);
+        console.log("==============")
+        console.log("[HISTORY-LOGS]:\n", logger.getLogs());
+      } catch (error) {
+        console.error('Eroare la încărcarea vremii:', error);
+      } finally {
+        hideLoading();
+      }
+        })
       }
     });
 
