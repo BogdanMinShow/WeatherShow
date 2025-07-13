@@ -10,7 +10,7 @@
 
 Această aplicație meteo permite utilizatorilor să afle rapid starea vremii în aproape orice oraș din lume. Folosind API-ul OpenWeatherMap, aplicația afișează temperatura curentă, condițiile atmosferice, viteza vântului, umiditatea și alte date relevante.
 
-Un mare plus al aplicației este detectarea automată a locației utilizatorului prin Geolocation API, cu fallback la localizarea IP-ului în caz că permisiunea este refuzată. Interfața este modernă, responsive și ușor de utilizat, iar istoricul căutărilor este salvat local pentru acces rapid ulterior.
+Un mare plus al aplicației este detectarea automată a locației utilizatorului, detectare care poate fi usor modificata din bara de setari "⚙️", prin Geolocation API, cu fallback la localizarea IP-ului în caz că permisiunea este refuzată. Interfața este modernă, responsive și ușor de utilizat, iar istoricul căutărilor este salvat local pentru acces rapid ulterior.
 
 ---
 
@@ -24,13 +24,12 @@ Un mare plus al aplicației este detectarea automată a locației utilizatorului
 - Afișare detaliată a datelor meteo: temperatură, condiții, viteză vânt, umiditate, presiune.
 - Conversie între Celsius și Fahrenheit.
 - Istoric căutări salvate localStorage cu posibilitate de acces rapid.
-- Design responsive, optimizat pentru desktop și mobil. [X]
-- Mesaje clare de eroare și feedback instant pentru utilizator. [X]
+- Design responsive, optimizat pentru desktop și mobil.
+- Mesaje clare de eroare și feedback instant pentru utilizator.
 
 ### Funcții avansate
 
-- Actualizare automată a datelor la intervale setate. [X]
-- Temă dinamică Light/Dark în funcție de ora zilei. [X]
+- Temă dinamică Light/Dark în funcție de ora zilei.
 - Tranziții și animații subtile în UI.
 - Cod modular ES6, folosind module JavaScript.
 
@@ -93,8 +92,8 @@ cd Weather-App
 ## ✳️ Future-Updates
 ### Mid-Updates:
 ---
-- [ ] Buton de creare pentru toate locatiile recente;
-- [ ] Functionarea cautarii recente si pe telefon;
+- [X] Buton de cautare/stergere pentru toate locatiile recente;
+- [X] Functionarea cautarii recente si pe telefon;
 - [ ] Generarea vremii pe o perioada de n zile (3);
 ---
 ### Big-Updates:

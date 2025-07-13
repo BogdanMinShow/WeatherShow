@@ -183,7 +183,7 @@ export const renderHistory = (historyItems) => {
                 elements.for.textContent = "WIND:"
                 elements.five.textContent = "VISIBILITY:"
                 elements.six.textContent = "SUNRISE:"
-                elements.seven.textContent = "SUNRISE:"
+                elements.seven.textContent = "SUNSET:"
                 }
 
                 data = await getCurrentWeatherWithFallback(x.city);
@@ -251,7 +251,7 @@ export const renderHistory = (historyItems) => {
                 elements.for.textContent = "WIND:"
                 elements.five.textContent = "VISIBILITY:"
                 elements.six.textContent = "SUNRISE:"
-                elements.seven.textContent = "SUNRISE:"
+                elements.seven.textContent = "SUNSET:"
                 }
 
                 data = await getCurrentWeatherWithFallback(x.city);

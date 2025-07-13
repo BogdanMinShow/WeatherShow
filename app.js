@@ -42,7 +42,8 @@ export async function defaults() {
     ui.showLoading();
 
     if (data.sys.country === "RO") {
-            document.querySelector("html").setAttribute("lang", "ro");
+        document.querySelector("html").setAttribute("lang", "ro");
+        localStorage.setItem("region", "ro")
         CONFIG.DEFAULT_LANG = "ro"
         languageBtn.style.marginLeft = "60px";
         languageBtn.textContent = "RO";
@@ -56,6 +57,7 @@ export async function defaults() {
         }
         if (data.sys.country !== "RO"){
         document.querySelector("html").setAttribute("lang", "en");
+        localStorage.setItem("region", "en")
         CONFIG.DEFAULT_LANG = "en"
         languageBtn.style.marginLeft = "";
         languageBtn.textContent = "EN";
@@ -65,7 +67,7 @@ export async function defaults() {
         elements.for.textContent = "WIND:"
         elements.five.textContent = "VISIBILITY:"
         elements.six.textContent = "SUNRISE:"
-        elements.seven.textContent = "SUNRISE:"
+        elements.seven.textContent = "SUNSET:"
         }
 
         data = await service.getCurrentWeatherWithFallback(ByCoords.name).then(async (data)=> data)
@@ -203,9 +205,12 @@ elements.unitsBtn.addEventListener("click", function(){
 })
 
 // SETTINGS
-elements.settingsBtn.addEventListener("click", function(){
+elements.settingsBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+
     const btn = elements.btnContainer;
     const isHidden = !btn.classList.contains("show");
+
     if (isHidden) {
         btn.style.display = "block";
         void btn.offsetWidth;
@@ -223,14 +228,30 @@ elements.settingsBtn.addEventListener("click", function(){
             transition: 0.6s;
         `;
     } else {
-        btn.classList.remove("show");
-        setTimeout(() => {
-            btn.style.display = "none";
-        }, 300);
-
-        elements.settingsBtn.style.cssText = "transition: 1s;";
+        closeSettings();
     }
-})
+});
+
+window.addEventListener("click", function (e) {
+    const btn = elements.btnContainer;
+    const settingsBtn = elements.settingsBtn;
+
+    if (
+        !btn.contains(e.target) &&
+        !settingsBtn.contains(e.target)
+    ) {
+        closeSettings();
+    }
+});
+
+function closeSettings() {
+    const btn = elements.btnContainer;
+    btn.classList.remove("show");
+    setTimeout(() => {
+        btn.style.display = "none";
+    }, 300);
+    elements.settingsBtn.style.cssText = "transition: 1s;";
+}
 // AUTO-LOCATE
 elements.autoLocate.addEventListener("click", function () {
     const isChecked = elements.autoLocate.hasAttribute("checked");
@@ -354,6 +375,7 @@ const handleSearch = async () => {
         // if (historyService.getHistory()[0].country === "RO") (TEST FUNCTIONAL)
         if (weatherService.sys.country === "RO") {
         document.querySelector("html").setAttribute("lang", "ro");
+        localStorage.setItem("region", "ro")
         CONFIG.DEFAULT_LANG = "ro"
         languageBtn.style.marginLeft = "60px";
         languageBtn.textContent = "RO";
@@ -364,8 +386,9 @@ const handleSearch = async () => {
         elements.five.textContent = "VIZIBILITATE:"
         elements.six.textContent = "RASARIT:"
         elements.seven.textContent = "APUS:"
-        }else{
+        }else if(weatherService.sys.country !== "RO"){
         document.querySelector("html").setAttribute("lang", "en");
+        localStorage.setItem("region", "en")
         CONFIG.DEFAULT_LANG = "en"
         languageBtn.style.marginLeft = "";
         languageBtn.textContent = "EN";
@@ -375,7 +398,7 @@ const handleSearch = async () => {
         elements.for.textContent = "WIND:"
         elements.five.textContent = "VISIBILITY:"
         elements.six.textContent = "SUNRISE:"
-        elements.seven.textContent = "SUNRISE:"
+        elements.seven.textContent = "SUNSET:"
         }
 
         weatherService = await service.getCurrentWeatherWithFallback(cityQuery)
@@ -427,7 +450,7 @@ const handleSearch = async () => {
 
         console.log("[HISTORY-LOGS]:\n", logger.getLogs())
         console.log("==============")
-
+        return weatherService
     } catch (err) {
         logger.error(err.message,"")
     }
@@ -442,14 +465,14 @@ if (elements.autoLocate.hasAttribute("checked")) {
 }else{
 if (historyService.getHistory().length>0) {
     elements.searchBar.value = historyService.getHistory()[0].city
-    await handleSearch()
-    setTimeout(() => {
-        elements.searchBar.value = ""
-    }, 650);
-}else{
+    await handleSearch().then(()=>{
+        setTimeout(() => {
+            elements.searchBar.value =""
+        }, 500);
+    })
+    }else{
     await defaults()
 }}
-
 //Functie de initializare a datelor din LocalStorage:
 initializeSettings()
 //Functia de lansare a EventListeners-urilor:
