@@ -94,6 +94,7 @@ cd Weather-App
 ---
 - [X] Buton de cautare/stergere pentru toate locatiile recente;
 - [X] Functionarea cautarii recente si pe telefon;
+- [ ] Rezolvarea problemei cu fusul orar **Individului&Locatiei**
 - [ ] Generarea vremii pe o perioada de n zile (3);
 ---
 ### Big-Updates:
